@@ -4,7 +4,8 @@ Description=Acer PSense service
 [Service]
 Type=simple
 ExecStart=/opt/psense/bin/psense -p /run/psense.pid -c /opt/psense/etc/config.yaml -f
-ExecStop=kill -s TERM `cat /run/psense.pid`
+ExecStop=sh -c 'kill -s TERM `cat /run/psense.pid`'
+ExecReload=sh -c 'kill -s HUP `cat /run/psense.pid`'
 PIDFile=/run/psense.pid
 TimeoutStopSec=20
 Restart=on-failure

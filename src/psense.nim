@@ -43,6 +43,7 @@ when isMainModule:
   # register some events handlers
   let 
     sel = newSelector[int]()
+    sKill = sel.registerSignal(SIGKILL, 0)
     sTerm = sel.registerSignal(SIGTERM, 0)
     sHup = sel.registerSignal(SIGHUP, 0)
     sPause = sel.registerSignal(SIGTSTP, 0)
@@ -70,7 +71,7 @@ when isMainModule:
             else:
               stderr.writeLine("SIGHUP received. Updating configuration ...")
 
-        if ev.fd == sPause or ev.fd == sTerm:
+        if ev.fd == sPause or ev.fd == sTerm or ev.fd == sKill:
           sel.unregister(sTime)
           for (index, zone) in cfg.zones.pairs:
               zones[index][1] = 0
@@ -81,6 +82,9 @@ when isMainModule:
                 levels[fanKey] = 0
           if ev.fd == sPause:
             stderr.writeLine("SIGTSTP received. Going idle ...")
+          elif ev.fd == sTerm:
+            stderr.writeLine("SIGTERM received. Quiting ...")
+            quit(0)
           else:
             stderr.writeLine("SIGTERM received. Quiting ...")
             quit(0)
@@ -107,11 +111,11 @@ when isMainModule:
                         ctrl.send(fan.address, fan.manual)
                       
                       ctrl.send(fan.wrReg, cfg.unsafeGet.rpm)
-                      stdout.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ {cfg.unsafeGet.info} ]")
+                      stderr.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ {cfg.unsafeGet.info} ]")
                       levels[fanKey] = cfg.unsafeGet.index
                   else:
                     ctrl.send(fan.address, fan.auto)
-                    stdout.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ auto ]")
+                    stderr.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ auto ]")
                     levels[fanKey] = 0
 
                 zones[index][1] = 0

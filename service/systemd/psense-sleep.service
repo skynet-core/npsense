@@ -6,8 +6,8 @@ StopWhenUnneeded=yes
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=kill -s TSTP `cat /run/psense.pid`
-ExecStop=kill -s CONT `cat /run/psense.pid`
+ExecStart=sh -c 'kill -s TSTP `cat /run/psense.pid`'
+ExecStop=sh -c 'kill -s CONT `cat /run/psense.pid`'
 
 [Install]
 WantedBy=sleep.target 
