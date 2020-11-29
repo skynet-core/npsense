@@ -1,0 +1,1 @@
+exec "sudo " & getCurrentDir() & "/uninstall/linux.sh"
