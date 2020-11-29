@@ -1,0 +1,13 @@
+[Unit]
+Description=Acer PSense service sleep hook
+Before=sleep.target
+StopWhenUnneeded=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=kill -s TSTP `cat /run/psense.pid`
+ExecStop=kill -s CONT `cat /run/psense.pid`
+
+[Install]
+WantedBy=sleep.target 

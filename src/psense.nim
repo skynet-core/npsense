@@ -1,30 +1,15 @@
 # This is just an example to get you started. A typical hybrid package
 # uses this file as the main entry point of the application.
-import os
-import posix
-import strutils
-import strformat
-import parseutils
-import sets
-import argparse
-import bitops
-import math
-import yaml
-import selectors
+import argparse, os, posix, strutils, strformat ,parseutils
+import tables, bitops, math, yaml ,selectors, times
 
 import psensepkg/port
 import psensepkg/config
 
-type 
-  Cmd = enum
-    Reload, Stop, Timer
-
 proc killService(pid: uint): void = 
   discard kill(cint(pid), SIGKILL)
   var res: cint
-  if 0 > waitpid(Pid(pid), res, bitor(WUNTRACED, WCONTINUED)):
-    stderr.writeLine("error: failed to kill existent service")
-    quit(1)
+  discard waitpid(Pid(pid), res, bitor(WUNTRACED, WCONTINUED))
 
 when isMainModule:
   let pid = getCurrentProcessId()
@@ -52,34 +37,85 @@ when isMainModule:
   var cfg = Config()
   load(s, cfg)
   s.close()
+  cfg.normalize()
   # now we have config read
   
   # register some events handlers
   let 
     sel = newSelector[int]()
-    sTerm = sel.registerSignal(SIGTERM,0)
-    sHup = sel.registerSignal(SIGHUP,0)
-    sTime = sel.registerTimer(1000, oneshot = false,0) # once per second
+    sTerm = sel.registerSignal(SIGTERM, 0)
+    sHup = sel.registerSignal(SIGHUP, 0)
+    sPause = sel.registerSignal(SIGTSTP, 0)
+    sCont = sel.registerSignal(SIGCONT, 0)
     ctrl = newPort(cfg.cmdPort, cfg.dataPort)
+
   
-  var zones = newSeq[array[2,int]](cfg.zones.len)
+  var
+    sTime = sel.registerTimer(1000, oneshot = false,0) # once per second 
+    zones = newSeq[array[2,int]](cfg.zones.len)
+    levels = newTable[int,int]()
   while true:
     for ev in sel.select(-1):
-        if ev.fd == sTerm:
-            quit(0)
-        if ev.fd == sHup:
+        let timeStr = now().format("dd-MM-yyyy HH:mm:ss")
+        if ev.fd == sHup or ev.fd == sCont:
             # reload config in main loop and send update to worker
             let s = newFileStream(opts.config, fmRead)
             load(s, cfg)
             s.close()
+            cfg.normalize()
+            # awake from sleep
+            if ev.fd == sCont:
+              sTime = sel.registerTimer(1000, oneshot = false,0)
+              stderr.writeLine("SIGCONT received. Continue watching ...")
+            else:
+              stderr.writeLine("SIGHUP received. Updating configuration ...")
+
+        if ev.fd == sPause or ev.fd == sTerm:
+          sel.unregister(sTime)
+          for (index, zone) in cfg.zones.pairs:
+              zones[index][1] = 0
+              zones[index][0] = 0
+              for (n, fan) in zone.fans.pairs:
+                let fanKey = index * 10 + n
+                ctrl.send(fan.address, fan.auto)
+                levels[fanKey] = 0
+          if ev.fd == sPause:
+            stderr.writeLine("SIGTSTP received. Going idle ...")
+          else:
+            stderr.writeLine("SIGTERM received. Quiting ...")
+            quit(0)
+
         if ev.fd == sTime:
             ## iterate through zones and compare temp with level bounds
             for (index, zone) in cfg.zones.pairs:
               let temp = ctrl.recv(zone.address)
               zones[index][1] += int(temp)
               zones[index][0] += 1
-              echo fmt"{zone.name}: curr: {temp} avg: {round(zones[index][1]/zones[index][0]):0.2F}"
+              let zoneAvg = round(zones[index][1]/zones[index][0])
               # reset at the and
-              if zones[index][0] > 3:
+              if zones[index][0] > 5:
+                # we have average temp for this zone, lets configure fans based on it
+                for (n, fan) in zone.fans.pairs:
+                  let fanKey = index * 10 + n # zone multiplied by 10 as higher range
+                  # do we need to enable this fan?
+                  let cfg: Option[FanConfig] = fan.levelConfig(uint8(zoneAvg))
+                  if cfg.isSome():
+                    let prevLev = levels.getOrDefault(fanKey)
+
+                    if prevLev != cfg.unsafeGet.index:
+                      if prevLev == 0:
+                        ctrl.send(fan.address, fan.manual)
+                      
+                      ctrl.send(fan.wrReg, cfg.unsafeGet.rpm)
+                      stdout.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ {cfg.unsafeGet.info} ]")
+                      levels[fanKey] = cfg.unsafeGet.index
+                  else:
+                    ctrl.send(fan.address, fan.auto)
+                    stdout.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ auto ]")
+                    levels[fanKey] = 0
+
                 zones[index][1] = 0
                 zones[index][0] = 0
+  
+  stderr.writeLine("quit unexpectedly...")
+  quit(1)

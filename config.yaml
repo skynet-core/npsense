@@ -44,15 +44,13 @@ config:
   max: 0x5A # default 0x5a (90 C)
   min: 0x00 # default 0x00 (0 C)
   levels: # if no stages it then use 25% step
-    - min: 25 # while we between min and max fan is in auto mode
-      max: 35 # when we overflow max then manual control is enabled and set to 25% of Max RPM
-      freq: 25
-    - min: 50
-      max: 65
-      freq: 50
-    - min: 75
-      max: 80
-      freq: 75
-    - min: 95
-      max: 100
-      freq: 100
+    - enterTemp: 30.0
+      freq: 40.0
+    - enterTemp: 40.0
+      freq: 50.0
+    - enterTemp: 60.0
+      freq: 70.0
+    - enterTemp: 80.0
+      freq: 90.0
+    - enterTemp: 90.0
+      freq: 100.0

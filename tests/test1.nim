@@ -18,4 +18,6 @@ suite "correct welcome":
       var s = newFileStream("config.yaml",fmRead)
       load(s,cfg)
       s.close()
-      echo cfg.config.levels
+      cfg.normalize()
+      echo $(cfg.zones[1].fans[0].levelConfig(0x32))
+      # echo cfg.zones
