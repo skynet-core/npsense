@@ -23,6 +23,10 @@ if [ ! -d /opt/psense/etc ]; then
     mkdir -p /opt/psense/etc
 fi
 
+if systemctl status psense 2>&1 1>/dev/null; then
+    systemctl stop psense
+fi
+
 cp -f ./psense /opt/psense/bin/
 cp -f ./psensepkg/cli/psensectl /opt/psense/bin/
 if $short; then
