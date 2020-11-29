@@ -23,14 +23,16 @@ support on our lovely Linux! Let's make it C🥶LD!
 
         cd /tmp && git clone git@github.com:skynet-core/npsense.git
         cd ./npsense && nimble build -d:release
-        nimble setup --verbose // install files into your system
-        nimble purge --verbose // uninstall files from system
+        nimble setup --configName:AcerP515-51   // install files into your system
+        nimble purge                            // uninstall files from system
 
 ## TODO list
 
 - [x] Temperature zones and fans speed level switching (ver 0.5.0)
 - [x] Systemd sleep hook via SIGTSTP and SIGCONT signals with switching to BIOS auto mode
 - [x] Systemd unit file (ver 0.6.0)
+- [x] Installation with nimble
+- [ ] Simple FAQ 
 - [ ] Apt, Rpm packages (ver 1.0.0)
 - [ ] command-line front-end client (ver 1.0.0)
 - [ ] Snap, Flatpak bundles (ver 1.1.0)
