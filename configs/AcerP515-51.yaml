@@ -48,10 +48,20 @@ config:
   levels: # if no stages it then use 25% step
     - enterTemp: 30.0
       freq: 40.0
+    - enterTemp: 35.0
+      freq: 45.0
     - enterTemp: 40.0
       freq: 50.0
+    - enterTemp: 45.0
+      freq: 55.0
+    - enterTemp: 50.0
+      freq: 60.0
+    - enterTemp: 55.0
+      freq: 65.0
     - enterTemp: 60.0
       freq: 70.0
+    - enterTemp: 70.0
+      freq: 80.0
     - enterTemp: 80.0
       freq: 90.0
     - enterTemp: 90.0
