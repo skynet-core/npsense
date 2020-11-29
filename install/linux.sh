@@ -4,6 +4,17 @@ set -e
 set -x
 
 echo "PSense Linux installer script"
+
+short=0
+if [ ! -f "./configs/$1" ]; then
+    if [ ! -f "./configs/$1" ]; then
+        echo "Error: neither $1 or $1.yaml were fond in ./configs folder"
+        exit 1
+    else
+        short=1
+    fi
+fi
+
 if [ ! -d /opt/psense/bin ]; then
     mkdir -p /opt/psense/bin
 fi
@@ -14,7 +25,12 @@ fi
 
 cp -f ./psense /opt/psense/bin/
 cp -f ./psensepkg/cli/psensectl /opt/psense/bin/
-cp -f ./config.yaml /opt/psense/etc/
+if $short; then
+    cp -f "./configs/$1.yaml" /opt/psense/etc/config.yaml
+else
+    cp -f "./configs/$1" /opt/psense/etc/config.yaml
+fi
+
 cp -f ./service/systemd/* /etc/systemd/system/
 
 systemctl daemon-reload

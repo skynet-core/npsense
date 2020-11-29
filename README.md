@@ -1,9 +1,10 @@
-# Warning!
-## This project is in early Alpha now! Please, be patient and wait for beta release 😎
-## Any contributions and tips are welcome!
-
 # NPSense
 ## Predator-Sense like Linux's service for controlling Acer gaming laptops fans speed
+All contributors 👨‍💻👩‍💻 are welcome. Donate💸💳 and tips☕ are greatly acceptable
+
+# Warning!
+This project is in Beta now! There are no configs except for Acer Predator P515-15. 
+Please, use it carefully...
 
 ## Why 🤔
 
@@ -17,6 +18,13 @@ So I'd decided to build a straightforward in configuration service which just wo
 keeping in mind idea of more wide set of sweat tool for configuration and monitoring temp, speed and manual control.
 I hope this project will help many Linux users which had bad luck to buy Acer gaming laptop without cooling software
 support on our lovely Linux! Let's make it C🥶LD!
+
+## How to build
+
+        cd /tmp && git clone git@github.com:skynet-core/npsense.git
+        cd ./npsense && nimble build -d:release
+        nimble setup --verbose // install files into your system
+        nimble purge --verbose // uninstall files from system
 
 ## TODO list
 
