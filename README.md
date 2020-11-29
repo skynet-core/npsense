@@ -9,14 +9,14 @@ Please, use it carefully...
 ## Why 🤔
 
 I am a Linux fan. I like it a lot, and found that I hate Windows a bit because of many reasons I wouldn't discuss 😅
-But since time I've bought `Acer Predator Triton 500` I was struggle to understand why I can't force my fans
-work with any tools from well-known list. I've tried may of them, I even found [nbfc](https://github.com/hirschmann/nbfc) 
+But since time I've bought `Acer Predator Triton 500` I was struggling to understand why I can't force my fans
+work with any tools from the well-known list. I've tried may of them, I even found [nbfc](https://github.com/hirschmann/nbfc) 
 project which you may find more complete and useful then this one, 
 but I faced into some troubles when was configuring it, so I decided to 
 deep dive into embedded development world a bit (yeah, far from real IoT stuff, but anyway connected a bit) 😎
 So I'd decided to build a straightforward in configuration service which just works and works well, but 
 keeping in mind idea of more wide set of sweat tool for configuration and monitoring temp, speed and manual control.
-I hope this project will help many Linux users which had bad luck to buy Acer gaming laptop without cooling software
+I hope this project will help many Linux users who had bad luck to buy Acer gaming laptop without cooling software
 support on our lovely Linux! Let's make it C🥶LD!
 
 ## How to build
