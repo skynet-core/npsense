@@ -1,5 +1,5 @@
 # NPSense
-## Predator-Sense like Linux's service for controlling Acer gaming laptops fans speed
+## Predator-Sense like service for controlling Acer gaming laptops fans speed on any Linux OS
 All contributors 👨‍💻👩‍💻 are welcome. Donate💸💳 and tips☕ are greatly acceptable
 
 # Warning!
