@@ -38,8 +38,8 @@ type
     fans* {. defaultVal: newSeq[Fan]() .}:       seq[Fan]
   Config*    = object
     name*:       string
-    pollTickMs*: uint16
-    reaction*:   uint8
+    pollTickMs* {. defaultVal: 500 .}: int
+    reaction* {. defaultVal: 7 .}:   int
     cmdPort*:    uint8
     dataPort*:   uint8 
     zones*:      seq[Zone]

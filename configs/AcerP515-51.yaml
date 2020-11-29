@@ -41,7 +41,7 @@ zones:
         wrReg: 0x9B
         rdReg: 0x9C
         min:    0xff
-        max:    0xreaction00
+        max:    0x00
 config: 
   max: 0x5A # default 0x5a (90 C)
   min: 0x00 # default 0x00 (0 C)
