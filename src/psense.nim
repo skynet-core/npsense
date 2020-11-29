@@ -52,7 +52,7 @@ when isMainModule:
 
   
   var
-    sTime = sel.registerTimer(1000, oneshot = false,0) # once per second 
+    sTime = sel.registerTimer(int(cfg.pollTickMs), oneshot = false,0) # once per second 
     zones = newSeq[array[2,int]](cfg.zones.len)
     levels = newTable[int,int]()
   while true:
@@ -66,7 +66,7 @@ when isMainModule:
             cfg.normalize()
             # awake from sleep
             if ev.fd == sCont:
-              sTime = sel.registerTimer(1000, oneshot = false,0)
+              sTime = sel.registerTimer(int(cfg.pollTickMs), oneshot = false,0)
               stderr.writeLine("SIGCONT received. Continue watching ...")
             else:
               stderr.writeLine("SIGHUP received. Updating configuration ...")
@@ -97,7 +97,7 @@ when isMainModule:
               zones[index][0] += 1
               let zoneAvg = round(zones[index][1]/zones[index][0])
               # reset at the and
-              if zones[index][0] > 5:
+              if zones[index][0] > int(cfg.reaction):
                 # we have average temp for this zone, lets configure fans based on it
                 for (n, fan) in zone.fans.pairs:
                   let fanKey = index * 10 + n # zone multiplied by 10 as higher range

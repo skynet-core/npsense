@@ -1,4 +1,6 @@
 name: "Acer Predator Triton 500 P515-51"
+reaction: 7
+pollTickMs: 500
 cmdPort: 0x66 #! required
 dataPort: 0x62 #! required
 zones: 
