@@ -64,6 +64,13 @@ when isMainModule:
             load(s, cfg)
             s.close()
             cfg.normalize()
+            # reset levels
+            for (index, zone) in cfg.zones.pairs:
+              zones[index][1] = 0
+              zones[index][0] = 0
+              for (n, fan) in zone.fans.pairs:
+                let fanKey = index * 10 + n
+                levels[fanKey] = 0
             # awake from sleep
             if ev.fd == sCont:
               sTime = sel.registerTimer(int(cfg.pollTickMs), oneshot = false,0)
