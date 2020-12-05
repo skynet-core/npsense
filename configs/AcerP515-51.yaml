@@ -34,27 +34,6 @@ zones:
         rdReg: 0x98
         min:    0xff
         max:    0x1D
-        levels: # this has MAX priority then common or per-zone levels and overrides them
-          - enterTemp: 30.0
-            freq: 30.0
-          - enterTemp: 35.0
-            freq: 40.0
-          - enterTemp: 40.0
-            freq: 45.0
-          - enterTemp: 45.0
-            freq: 50.0
-          - enterTemp: 50.0
-            freq: 60.0
-          - enterTemp: 55.0
-            freq: 65.0
-          - enterTemp: 60.0
-            freq: 70.0
-          - enterTemp: 70.0
-            freq: 85.0
-          - enterTemp: 80.0
-            freq: 95.0
-          - enterTemp: 85.0
-            freq: 100.0
       - name: Fan 2
         address: 0x9A
         auto: 0x04
@@ -64,7 +43,7 @@ zones:
         min:    0xff
         max:    0x00
     levels:
-      - enterTemp: 40.0
+      - enterTemp: 30.0
         freq: 40.0
       - enterTemp: 45.0
         freq: 45.0
@@ -85,8 +64,7 @@ zones:
       - enterTemp: 85.0
         freq: 100.0
 config: 
-  max: 0x64 # default 0x5a (100 C)
-  min: 0x00 # default 0x00 (0 C)
+  maxTemp: 0x64 # default 0x5a (100 C)
   levels: # if no stages it then use 25% step
     - enterTemp: 40.0
       freq: 40.0

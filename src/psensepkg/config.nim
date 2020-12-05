@@ -17,8 +17,7 @@ const defaultLevels = (1..4).toSeq.map(proc (x: int): Level =
 
 type
   Settings*  = object
-    max* {. defaultVal: 0x64 .}:                uint8
-    min* {. defaultVal: 0x00 .}:                uint8
+    maxTemp* {. defaultVal: 0x64 .}:            uint8
     levels* {. defaultVal: defaultLevels .}:    seq[Level]
   Fan*       = object
     name*:                                      string
@@ -75,7 +74,7 @@ proc fanConfig(fan: ptr Fan, zone: Zone, config: Settings): void =
     zoneTempRange = int16(zone.max) - int16(zone.min)
     rpmRange = int16(fan.max) - int16(fan.min)
 
-  var tempRange = int16(config.max) - int16(config.min)
+  var tempRange = int16(config.maxTemp)
   if tempRange > zoneTempRange:
     tempRange = zoneTempRange
 
