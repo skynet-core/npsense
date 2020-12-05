@@ -5,6 +5,7 @@ import tables, bitops, math, yaml ,selectors, times
 
 import psensepkg/port
 import psensepkg/config
+import psensepkg/misc
 
 proc killService(pid: uint): void = 
   discard kill(cint(pid), SIGKILL)
@@ -33,11 +34,7 @@ when isMainModule:
   
   # here we can lock
   writeFile(opts.pidfile, $pid & "\n")
-  let s = newFileStream(opts.config,fmRead)
-  var cfg = Config()
-  load(s, cfg)
-  s.close()
-  cfg.normalize()
+  var cfg = loadConfig(opts.config)
   # now we have config read
   
   # register some events handlers
@@ -45,7 +42,7 @@ when isMainModule:
     sel = newSelector[int]()
     sKill = sel.registerSignal(SIGKILL, 0)
     sTerm = sel.registerSignal(SIGTERM, 0)
-    sHup = sel.registerSignal(SIGHUP, 0)
+    sHup: int = sel.registerSignal(SIGHUP, 0)
     sPause = sel.registerSignal(SIGTSTP, 0)
     sCont = sel.registerSignal(SIGCONT, 0)
     ctrl = newPort(cfg.cmdPort, cfg.dataPort)
@@ -55,15 +52,13 @@ when isMainModule:
     sTime = sel.registerTimer(int(cfg.pollTickMs), oneshot = false,0) # once per second 
     zones = newSeq[array[2,int]](cfg.zones.len)
     levels = newTable[int,int]()
+
   while true:
     for ev in sel.select(-1):
         let timeStr = now().format("dd-MM-yyyy HH:mm:ss")
         if ev.fd == sHup or ev.fd == sCont:
             # reload config in main loop and send update to worker
-            let s = newFileStream(opts.config, fmRead)
-            load(s, cfg)
-            s.close()
-            cfg.normalize()
+            cfg = loadConfig(opts.config)
             # reset levels
             for (index, zone) in cfg.zones.pairs:
               zones[index][1] = 0

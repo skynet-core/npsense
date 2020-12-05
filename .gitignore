@@ -1,3 +1,5 @@
 *.pid
 psense
 psensepkg/*
+tests/*
+!tests/*.nim*
