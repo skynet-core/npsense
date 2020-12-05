@@ -9,15 +9,24 @@ import unittest
 import psensepkg/config
 import streams
 import yaml
-import times
 
 suite "correct welcome":
    
    test "test yaml":
       var cfg = Config()
-      var s = newFileStream("config.yaml",fmRead)
+      var s = newFileStream("./configs/AcerP515-51.yaml",fmRead)
       load(s,cfg)
       s.close()
       cfg.normalize()
       echo $(cfg.zones[1].fans[0].levelConfig(0x32))
       # echo cfg.zones
+   
+   test "case in foreach":
+      for i in 0..<10:
+         for j in 0..<10:
+            case i*j:
+            of 0:
+               echo "ZERO"
+            else: discard
+               
+         

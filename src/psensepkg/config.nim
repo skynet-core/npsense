@@ -2,13 +2,13 @@ import yaml,sequtils ,math ,algorithm ,strformat
 
 type
   Level*     = object
-    enterTemp*:  float64
-    freq*:       float64
+    enterTemp*:         float64
+    freq*:              float64
   FanConfig* = object
-    info*:           string
-    index*:          int
-    temp*:           uint8 # when enable
-    rpm*:            uint8 # fan speed
+    info*:              string
+    index*:             int
+    temp*:              uint8 # when enable
+    rpm*:               uint8 # fan speed
 
 
 const defaultLevels = (1..4).toSeq.map(proc (x: int): Level =
@@ -17,33 +17,35 @@ const defaultLevels = (1..4).toSeq.map(proc (x: int): Level =
 
 type
   Settings*  = object
-    max* {. defaultVal: 0x64 .}:    uint8
-    min* {. defaultVal: 0x00 .}:    uint8
-    levels* {. defaultVal: defaultLevels .}:     seq[Level]
+    max* {. defaultVal: 0x64 .}:                uint8
+    min* {. defaultVal: 0x00 .}:                uint8
+    levels* {. defaultVal: defaultLevels .}:    seq[Level]
   Fan*       = object
-    name*:       string
-    address*:    uint8
-    auto* {. defaultVal: 0x04 .}:       uint8
-    manual* {. defaultVal: 0x14 .}:     uint8
-    wrReg*:      uint8
-    rdReg*:      uint8
-    min* {. defaultVal: 0xff .}:        uint8
-    max* {. defaultVal: 0x00 .}:        uint8
-    levels* {. transient .}:            seq[FanConfig]
+    name*:                                      string
+    address*:                                   uint8
+    auto* {. defaultVal: 0x04 .}:               uint8
+    manual* {. defaultVal: 0x14 .}:             uint8
+    wrReg*:                                     uint8
+    rdReg*:                                     uint8
+    min* {. defaultVal: 0xff .}:                uint8
+    max* {. defaultVal: 0x00 .}:                uint8
+    levels* {. defaultVal: newSeq[Level]() .}:  seq[Level] 
+    normLevels* {. transient .}:                seq[FanConfig]
   Zone*      = object
-    name*:       string
-    address*:    uint8
-    min* {. defaultVal: 0x00 .}:        uint8
-    max* {. defaultVal: 0xff .}:        uint8
-    fans* {. defaultVal: newSeq[Fan]() .}:       seq[Fan]
+    name*:                                      string
+    address*:                                   uint8
+    min* {. defaultVal: 0x00 .}:                uint8
+    max* {. defaultVal: 0xff .}:                uint8
+    fans* {. defaultVal: newSeq[Fan]() .}:      seq[Fan]
+    levels* {. defaultVal: newSeq[Level]() .}:  seq[Level]
   Config*    = object
-    name*:       string
-    pollTickMs* {. defaultVal: 500 .}: int
-    reaction* {. defaultVal: 7 .}:   int
-    cmdPort*:    uint8
-    dataPort*:   uint8 
-    zones*:      seq[Zone]
-    config*:   Settings
+    name*:                                      string
+    pollTickMs* {. defaultVal: 500 .}:          int
+    reaction* {. defaultVal: 7 .}:              int
+    cmdPort*:                                   uint8
+    dataPort*:                                  uint8 
+    zones*:                                     seq[Zone]
+    config*:                                    Settings
 
 
 proc `<`(a,b: FanConfig): bool = 
@@ -51,9 +53,9 @@ proc `<`(a,b: FanConfig): bool =
 
 method levelConfig*(fan: Fan, temp: uint8): Option[FanConfig] {. base .} =
   var foundAt = -1
-  var levels = fan.levels
+  var levels = fan.normLevels
   levels.sort(Ascending)
-  for (index, level) in fan.levels.pairs:
+  for (index, level) in levels.pairs:
     if level.temp <= temp:
       foundAt = index
     else:
@@ -64,34 +66,46 @@ method levelConfig*(fan: Fan, temp: uint8): Option[FanConfig] {. base .} =
     result = none[FanConfig]()
     return
 
-  result = some[FanConfig](fan.levels[foundAt])
+  result = some[FanConfig](levels[foundAt])
   
 
-proc fanConfig(min: uint8, max:uint8, fan: ptr Fan, config: Settings): void =
+proc fanConfig(fan: ptr Fan, zone: Zone, config: Settings): void =
   ## gerates set of calculated values per unique fan
-  let zoneTempRange = int16(max) - int16(min)
-  let rpmRange = int16(fan.max) - int16(fan.min)
+  let 
+    zoneTempRange = int16(zone.max) - int16(zone.min)
+    rpmRange = int16(fan.max) - int16(fan.min)
 
   var tempRange = int16(config.max) - int16(config.min)
   if tempRange > zoneTempRange:
     tempRange = zoneTempRange
 
-  let rpmPoint = float64(rpmRange) * 1e-2
-  let tempPoint = float64(tempRange) * 1e-2
+  let 
+    rpmPoint = float64(rpmRange) * 1e-2
+    tempPoint = float64(tempRange) * 1e-2
 
-  var list = newSeq[FanConfig](config.levels.len)
+  var levels: seq[Level] 
+  # if fan has own specialized config use it
+  if fan.levels.len > 0:
+    levels = fan.levels
+  elif zone.levels.len > 0:
+    # if zone has its specialized config use it
+    levels = zone.levels
+  else:
+    levels = config.levels
+
+  var list = newSeq[FanConfig](levels.len)
   
-  for (index, level) in config.levels.pairs:
-    var rpmDirt = level.freq * rpmPoint
-    var rpm:uint8
+  for (index, level) in levels.pairs:
+    var 
+      rpm: uint8
+      temp: uint8
+      rpmDirt = level.freq * rpmPoint
+      tempDirt = level.enterTemp * tempPoint
     # in case reverse values
     if rpmDirt < 0:
       rpm = uint8(floor(rpmDirt))
     else:
       rpm = uint8(round(rpmDirt))
-
-    var tempDirt = level.enterTemp * tempPoint
-    var temp: uint8
         # in case reverse values
     if tempDirt < 0:
       temp = uint8(floor(tempDirt))
@@ -103,10 +117,10 @@ proc fanConfig(min: uint8, max:uint8, fan: ptr Fan, config: Settings): void =
     list[index].rpm = rpm
     list[index].index = (index + 1)
   # save levels
-  fan.levels = list
+  fan.normLevels = list
 
 method normalize*(cfg: var Config): void {. base .} =
   for zone in cfg.zones:
     for i in 0..zone.fans.high:
       var fanPtr = zone.fans[i].unsafeAddr
-      fanConfig(zone.min, zone.max, fanPtr, cfg.config)
+      fanConfig(fanPtr, zone, cfg.config)

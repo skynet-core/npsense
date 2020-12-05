@@ -1,6 +1,6 @@
 name: "Acer Predator Triton 500 P515-51"
-reaction: 7
-pollTickMs: 500
+reaction: 10
+pollTickMs: 1000
 cmdPort: 0x66 #! required
 dataPort: 0x62 #! required
 zones: 
@@ -34,6 +34,27 @@ zones:
         rdReg: 0x98
         min:    0xff
         max:    0x1D
+        levels: # this has MAX priority then common or per-zone levels and overrides them
+          - enterTemp: 30.0
+            freq: 30.0
+          - enterTemp: 35.0
+            freq: 40.0
+          - enterTemp: 40.0
+            freq: 45.0
+          - enterTemp: 45.0
+            freq: 50.0
+          - enterTemp: 50.0
+            freq: 60.0
+          - enterTemp: 55.0
+            freq: 65.0
+          - enterTemp: 60.0
+            freq: 70.0
+          - enterTemp: 70.0
+            freq: 85.0
+          - enterTemp: 80.0
+            freq: 95.0
+          - enterTemp: 85.0
+            freq: 100.0
       - name: Fan 2
         address: 0x9A
         auto: 0x04
@@ -42,27 +63,48 @@ zones:
         rdReg: 0x9C
         min:    0xff
         max:    0x00
+    levels:
+      - enterTemp: 40.0
+        freq: 40.0
+      - enterTemp: 45.0
+        freq: 45.0
+      - enterTemp: 50.0
+        freq: 50.0
+      - enterTemp: 55.0
+        freq: 55.0
+      - enterTemp: 60.0
+        freq: 60.0
+      - enterTemp: 65.0
+        freq: 65.0
+      - enterTemp: 70.0
+        freq: 70.0
+      - enterTemp: 75.0
+        freq: 80.0
+      - enterTemp: 80.0
+        freq: 95.0
+      - enterTemp: 85.0
+        freq: 100.0
 config: 
-  max: 0x5A # default 0x5a (90 C)
+  max: 0x64 # default 0x5a (100 C)
   min: 0x00 # default 0x00 (0 C)
   levels: # if no stages it then use 25% step
-    - enterTemp: 30.0
-      freq: 40.0
-    - enterTemp: 35.0
-      freq: 45.0
     - enterTemp: 40.0
-      freq: 50.0
+      freq: 40.0
     - enterTemp: 45.0
-      freq: 55.0
+      freq: 45.0
     - enterTemp: 50.0
-      freq: 60.0
+      freq: 50.0
     - enterTemp: 55.0
-      freq: 65.0
+      freq: 55.0
     - enterTemp: 60.0
-      freq: 70.0
+      freq: 60.0
+    - enterTemp: 65.0
+      freq: 65.0
     - enterTemp: 70.0
+      freq: 70.0
+    - enterTemp: 75.0
       freq: 80.0
     - enterTemp: 80.0
-      freq: 90.0
-    - enterTemp: 90.0
+      freq: 95.0
+    - enterTemp: 85.0
       freq: 100.0
