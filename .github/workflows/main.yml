@@ -13,7 +13,7 @@ jobs:
       shell: bash
       run: |
         git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
-        cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|"
+        cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
         echo "::set-output name=TAG::$git_tag"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
