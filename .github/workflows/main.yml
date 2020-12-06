@@ -26,7 +26,7 @@ jobs:
       with:
         go-version: ^1.15
     - name: Build static binaries
-      uses: skynet-core/nim@v1.0
+      uses: skynet-core/nim@v1.1
     - name: Install Github-Release
       shell: bash
       run: go get github.com/github-release/github-release

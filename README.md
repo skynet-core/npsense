@@ -4,7 +4,7 @@ All contributors 👨‍💻👩‍💻 are welcome. Donate💸💳 and tips☕ 
 
 # Warning!
 This project is in Beta now! There are no configs except for Acer Predator P515-15. 
-Please, use it carefully ...
+Please, use it carefully...
 
 ## Why 🤔
 
