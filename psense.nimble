@@ -20,7 +20,7 @@ requires "argparse >= 1.0.0"
 
 task static, "Build static musl binaries":
     let dir = getCurrentDir()
-    exec "docker run --rm -v " & dir & ":/home/nim/psense -it smartcoder/psense-builder:v0.1.0 bash -c 'cd /home/nim/psense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size'"
+    exec "docker run --rm -v " & dir & ":/home/nim/psense -it smartcoder/psense-builder:v0.1.0 bash -c 'cd /home/nim/psense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size -y'"
 
 task setup, "Install psense service":
     

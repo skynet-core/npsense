@@ -1,0 +1,23 @@
+name: "Build and package PSense project"
+on:
+  push:
+    branches: ["feature/packages"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.15
+    - name: Build static binaries
+      uses: skynet-core/nim@v0.1.0
+    - name: Install Github-Release
+      shell: bash
+      run: go get github.com/github-release/github-release
+    - name: Publish builds
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      run: github-release info -u skynet-core -r npsense
