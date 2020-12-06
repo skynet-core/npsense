@@ -11,8 +11,14 @@ jobs:
     - name: Generate nfpm config
       id: git-metadata
       shell: bash
+      env:
+          GIT_REF: ${{ github.ref }}
       run: |
-        git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
+        if [[ $a == "*refs/tags/*" ]]; then
+          git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
+        else
+          git_tag=$(cat psense.nimble | grep version | head -n 1 | cut -d '=' -f2 | awk '{$1=$1};1' | sed 's|\"||g')
+        fi
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
         echo "::set-output name=TAG::$git_tag"
     - name: Set up Go 1.x
