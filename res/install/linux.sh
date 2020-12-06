@@ -35,7 +35,7 @@ else
     cp -f "./configs/$1" /opt/psense/etc/config.yaml
 fi
 
-cp -f ./service/systemd/* /etc/systemd/system/
+cp -f ./res/service/systemd/* /etc/systemd/system/
 
 systemctl daemon-reload
 systemctl enable psense --now

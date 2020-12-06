@@ -65,16 +65,3 @@ zones:
         freq: 100.0
 config: 
   maxTemp: 0x64 # default 0x5a (100 C)
-  levels: # if no stages it then use 25% step
-    - enterTemp: 50.0
-      freq: 50.0
-    - enterTemp: 55.0
-      freq: 55.0
-    - enterTemp: 60.0
-      freq: 60.0
-    - enterTemp: 65.0
-      freq: 65.0
-    - enterTemp: 70.0
-      freq: 85.0
-    - enterTemp: 75.0
-      freq: 100.0
