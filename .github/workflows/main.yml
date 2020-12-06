@@ -6,6 +6,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Generate nfpm config
+      id: git-metadata
+      shell: bash
+      run: |
+        git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
+        cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|"
+        echo "::set-output name=TAG::$git_tag"
     - name: Check out code
       uses: actions/checkout@v2
     - name: Set up Go 1.x
@@ -13,7 +20,7 @@ jobs:
       with:
         go-version: ^1.15
     - name: Build static binaries
-      uses: skynet-core/nim@v1.2
+      uses: skynet-core/nim@v1.4
     - name: Install Github-Release
       shell: bash
       run: go get github.com/github-release/github-release

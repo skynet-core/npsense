@@ -1,21 +1,25 @@
 name: "psense"
 arch: "amd64"
 platform: "linux"
-version: @version
+version: "@git_tag"
 section: "system"
 priority: "extra"
 maintainer: "Vasyl Zaichenko <skynet.vasyl@gmail.com>"
 description: |
-  PSense provides efficient fan control for gaming laptops on Linux
-vendor: "Skynet Ltd."
+  PSense provides efficient control for fans on Gaming Laptops. 
+vendor: "Skynet Core Ltd."
 homepage: "https://github.com/skynet-core/npsense"
-license: "GPL-3"
+license: "MIT"
 changelog: "changelog.yaml"
 files:
   ./psense: "/opt/psense/bin/psense"
   ./psensepkg/cli/psensectl: "/opt/psense/bin/psensectl"
   ./configs: "/opt/psense/share/configs"
   ./res/service: "/opt/psense/share/service"
+config_files:
+symlinks:
+  /opt/psense/bin/psense: "/usr/local/bin/psense"
+  /opt/psense/bin/psensectl: "/usr/local/bin/psensectl"
 overrides:
   rpm:
     scripts:
@@ -23,5 +27,5 @@ overrides:
       postremove: ./res/scripts/postremove.sh
   deb:
     scripts:
-      postinstall: ./scripts/postinstall.sh
-      preremove: ./scripts/preremove.sh
+      postinstall: ./res/scripts/postinstall.sh
+      preremove: ./res/scripts/preremove.sh
