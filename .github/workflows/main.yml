@@ -6,6 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Check out code
+      uses: actions/checkout@v2
     - name: Generate nfpm config
       id: git-metadata
       shell: bash
@@ -13,8 +15,6 @@ jobs:
         git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|"
         echo "::set-output name=TAG::$git_tag"
-    - name: Check out code
-      uses: actions/checkout@v2
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
