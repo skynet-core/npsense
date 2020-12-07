@@ -42,7 +42,7 @@ jobs:
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
         echo "::set-output name=TAG::$git_tag"
     - name: Create deb package
-      uses: skynet-core/nfpm@v1.1
+      uses: skynet-core/nfpm@v1.0
       with:
         config: nfpm.yaml
         packager: deb
