@@ -42,6 +42,11 @@ jobs:
         fi
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
         echo "::set-output name=TAG::$git_tag"
+        if [[ $git_tag == *"-beta"* ]]; then
+          echo "::set-output name=LABEL::Beta-release"
+        else
+          echo "::set-output name=LABEL::Stable-release"
+        fi
     - name: Create deb package
       id: deb-pack
       uses: skynet-core/nfpm@v1.2
@@ -71,7 +76,7 @@ jobs:
     - name: Draft new release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: github-release -v release -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}"
+      run: github-release -v release -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}" -l ${{ steps.nfpm-cfg.outputs.LABEL }}
     - name: Upload dev package
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
