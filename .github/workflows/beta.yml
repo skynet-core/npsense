@@ -1,9 +1,7 @@
 name: beta-release
 on:
-  pull_request:
-    branches:
-      - develop
-    types: [closed]
+  repository_dispatch:
+    types: [beta-release]
 jobs:
   build:
     if: github.event.pull_request.merged == true
@@ -37,7 +35,7 @@ jobs:
       id: nfpm-cfg
       shell: bash
       run: |
-        version="$(cat RELEASE | awk '{$1=$1};1')"
+        version="$(cat ./RELEASE | awk '{$1=$1};1')"
         cat ./nfpm.template.yaml | sed -e "s|@version|$version|g" > ./nfpm.yaml
         echo "::set-output name=version::$version"
     - name: Create deb package
