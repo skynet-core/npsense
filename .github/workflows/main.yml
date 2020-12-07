@@ -1,7 +1,9 @@
 name: "Build and package PSense project"
 on:
   push:
-    branches: ["feature/packages"]
+    tags: 
+      - 'v*.*.*'
+      - 'v*.*.*-beta'
 jobs:
   build:
     runs-on: ubuntu-latest
