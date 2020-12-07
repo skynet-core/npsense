@@ -13,26 +13,26 @@ jobs:
     - name: Archive psense binary
       uses: actions/upload-artifact@v2
       with:
-        name: psense
-        path: ${{ github.workspace }}/psense
-    - name: Archive psensectl binary
-      uses: actions/upload-artifact@v2
-      with:
-        name: psensectl
-        path: ${{ github.workspace }}/psensepkg/cli/psensectl
+        name: binaries
+        path: |
+          ${{ github.workspace }}/psense
+          ${{ github.workspace }}/psensepkg/cli/psensectl
   package:
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - name: Download all workflow run artifacts
+    - name: Download psense artifact
       uses: actions/download-artifact@v2
+      with:
+        name: binaries
     - name: Generate nfpm config
       id: nfpm-cfg
       shell: bash
       env:
           GIT_REF: ${{ github.ref }}
       run: |
+        ls -la
         if [[ $a == "*refs/tags/*" ]]; then
           git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
         else
