@@ -35,10 +35,8 @@ jobs:
       env:
           GIT_REF: ${{ github.ref }}
       run: |
-        echo "GIT_REF: $GIT_REF"
-        echo "GITHUB_REF: ${{ github.ref }}"
-        if [[ "$GIT_REF" == "*refs/tags/*" ]]; then
-          git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
+        if [[ "$GIT_REF" == "refs/tags/"* ]]; then
+          git_tag=$(GIT_REF:##*/)
         else
           git_tag=$(cat psense.nimble | grep version | head -n 1 | cut -d '=' -f2 | awk '{$1=$1};1' | sed 's|\"||g')
         fi
