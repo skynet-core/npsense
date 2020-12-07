@@ -8,8 +8,27 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Build static binaries
+      uses: skynet-core/nim@v1.2
+    - name: Archive psense binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: psense
+        path: ${{ github.workspace }}/psense
+    - name: Archive psensectl binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: psensectl
+        path: ${{ github.workspace }}/psensepkg/cli/psensectl
+  package:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Download all workflow run artifacts
+      uses: actions/download-artifact@v2
     - name: Generate nfpm config
-      id: git-metadata
+      id: nfpm-cfg
       shell: bash
       env:
           GIT_REF: ${{ github.ref }}
@@ -25,8 +44,6 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ^1.15
-    - name: Build static binaries
-      uses: skynet-core/nim@v1.2
     - name: Install Github-Release
       shell: bash
       run: go get github.com/github-release/github-release
