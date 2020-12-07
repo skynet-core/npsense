@@ -11,22 +11,25 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Dump some vars
+      run: |
+        echo "BASE REF: ${{ toJSON(github.event.pull_request) }}"
     - name: Build static binaries
       uses: skynet-core/nim@v1.2
-    - name: Archive psense binary
+    - name: Archive nsense binary
       uses: actions/upload-artifact@v2
       with:
         name: binaries
         path: |
-          ${{ github.workspace }}/psense
-          ${{ github.workspace }}/psensepkg/cli/psensectl
+          ${{ github.workspace }}/nsense
+          ${{ github.workspace }}/nsensepkg/cli/nsensectl
   package:
     runs-on: ubuntu-latest
     needs: build
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - name: Download psense artifact
+    - name: Download nsense artifact
       uses: actions/download-artifact@v2
       with:
         name: binaries
@@ -49,7 +52,7 @@ jobs:
       with:
         config: nfpm.yaml
         packager: rpm
-    - name: Archive psense packages
+    - name: Archive nsense packages
       uses: actions/upload-artifact@v2
       with:
         name: packages
@@ -69,6 +72,6 @@ jobs:
         VERSION: ${{ steps.nfpm-cfg.outputs.version }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        github-release -v release -u skynet-core -r npsense -t v$TAG-beta -n $LABEL
-        github-release -v upload -u skynet-core -r npsense -t v$TAG-beta -f *.deb -n ${{ steps.deb-pack.outputs.package }}
-        github-release -v upload -u skynet-core -r npsense -t v$TAG-beta -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
+        github-release -v release -u skynet-core -r nsense -t v$TAG-beta -n $LABEL
+        github-release -v upload -u skynet-core -r nsense -t v$TAG-beta -f *.deb -n ${{ steps.deb-pack.outputs.package }}
+        github-release -v upload -u skynet-core -r nsense -t v$TAG-beta -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}

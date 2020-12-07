@@ -1,4 +1,4 @@
-name: "psense"
+name: "nsense"
 arch: "amd64"
 platform: "linux"
 version: "@version"
@@ -6,20 +6,20 @@ section: "system"
 priority: "extra"
 maintainer: "Vasyl Zaichenko <skynet.vasyl@gmail.com>"
 description: |
-  PSense provides efficient control for fans on Gaming Laptops. 
+  nsense provides efficient control for fans on Gaming Laptops. 
 vendor: "Skynet Core Ltd."
-homepage: "https://github.com/skynet-core/npsense"
+homepage: "https://github.com/skynet-core/nsense"
 license: "MIT"
 changelog: "changelog.yaml"
 files:
-  ./psense: "/opt/psense/bin/psense"
-  ./psensepkg/cli/psensectl: "/opt/psense/bin/psensectl"
-  ./configs: "/opt/psense/share/configs"
-  ./res/service: "/opt/psense/share/service"
+  ./nsense: "/opt/nsense/bin/nsense"
+  ./nsensepkg/cli/nsensectl: "/opt/nsense/bin/nsensectl"
+  ./configs: "/opt/nsense/share/configs"
+  ./res/service: "/opt/nsense/share/service"
 config_files:
 symlinks:
-  /opt/psense/bin/psense: "/usr/local/bin/psense"
-  /opt/psense/bin/psensectl: "/usr/local/bin/psensectl"
+  /opt/nsense/bin/nsense: "/usr/local/bin/nsense"
+  /opt/nsense/bin/nsensectl: "/usr/local/bin/nsensectl"
 overrides:
   rpm:
     scripts:

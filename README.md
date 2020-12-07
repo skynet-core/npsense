@@ -1,33 +1,40 @@
-# NPSense
+# NSense Fan Control
 
-[![test](https://img.shields.io/github/workflow/status/skynet-core/npsense/test?style=for-the-badge)](https://github.com/skynet-core/npsense/actions?query=workflow%3Atest)
-[![last commit](https://img.shields.io/github/last-commit/skynet-core/npsense?style=for-the-badge)](https://github.com/skynet-core/npsense/releases/latest)
-[![last release](https://img.shields.io/github/release-date/skynet-core/npsense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/npsense/releases/latest)
+[![test](https://img.shields.io/github/workflow/status/skynet-core/nsense/test?style=for-the-badge)](https://github.com/skynet-core/nsense/actions?query=workflow%3Atest)
+[![last commit](https://img.shields.io/github/last-commit/skynet-core/nsense?style=for-the-badge)](https://github.com/skynet-core/nsense/releases/latest)
+[![last release](https://img.shields.io/github/release-date/skynet-core/nsense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/nsense/releases/latest)
 
-## Predator-Sense like service for controlling Acer gaming laptops fans speed on any Linux OS
-All contributors 👨‍💻👩‍💻 are welcome. Donate💸💳 and tips☕ are greatly acceptable
+## Daemon service for controlling gaming laptops fans speed on any Linux OS
 
-# Warning!
-This project is in Beta now! There are no configs except for Acer Predator P515-15. 
-Please, use it carefully...
+<h1 align="left"></h1>
+        <img src="./cold.svg" alt="NSense Logo" width="306" height="344"/>
+</p>
 
-## Why 🤔
+## Advantages
 
-I am a Linux fan. I like it a lot, and found that I hate Windows a bit because of many reasons I wouldn't discuss 😅
-But since time I've bought `Acer Predator Triton 500` I was struggling to understand why I can't force my fans
-work with any tools from the well-known list. I've tried may of them, I even found [nbfc](https://github.com/hirschmann/nbfc) 
-project which you may find more complete and useful then this one, 
-but I faced into some troubles when was configuring it, so I decided to 
-deep dive into embedded development world a bit (yeah, far from real IoT stuff, but anyway connected a bit) 😎
-So I'd decided to build a straightforward in configuration service which just works and works well, but 
-keeping in mind idea of more wide set of sweat tool for configuration and monitoring temp, speed and manual control.
-I hope this project will help many Linux users who had bad luck to buy Acer gaming laptop without cooling software
-support on our lovely Linux! Let's make it C🥶LD!
+1. Zero dependency
+2. Flexible and human-friendly config file
+3. Service controlled by signal
+4. Portable (statically built with musl)
 
+
+## Installation
+
+Download package for [latest release](https://github.com/skynet-core/nsense/releases/latest) and install it using your package manager 
+
+### Debian derivatives (Ubuntu, Debian etc.)
+
+        sudo dpkg -i ./nsense-<version>.deb // install
+        sudo dpkg -P nsense // remove
+
+## RHEL derivatives (Fedora, CentOS etc.)
+
+        sudo rpm -i ./nsense-<version>.rpm // install
+        sudo rpm -e nsense // remove
 ## How to build
 
-        cd /tmp && git clone git@github.com:skynet-core/npsense.git
-        cd ./npsense && nimble build -d:release
+        cd /tmp && git clone git@github.com:skynet-core/nsense.git
+        cd ./nsense && nimble build -d:release
         nimble setup --configName:AcerP515-51   // install files into your system
         nimble purge                            // uninstall files from system
 

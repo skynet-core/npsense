@@ -9,7 +9,7 @@ description   = "A new awesome nimble package"
 license       = "MIT"
 srcDir        = "src"
 installExt    = @["nim"]
-bin           = @["psense","psensepkg/cli/psensectl"]
+bin           = @["nsense","nsensepkg/cli/nsensectl"]
 
 
 # Dependencies
@@ -20,9 +20,9 @@ requires "argparse >= 1.0.0"
 
 task static, "Build static musl binaries":
     let dir = getCurrentDir()
-    exec "docker run --rm -v " & dir & ":/home/nim/psense -it smartcoder/nim:v1.4 bash -c 'cd /home/nim/psense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size -y'"
+    exec "docker run --rm -v " & dir & ":/home/nim/nord-sense -it smartcoder/nim:v1.4 bash -c 'cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size -y'"
 
-task setup, "Install psense service":
+task setup, "Install nsense service":
     
     let dir = getCurrentDir()
     var 
@@ -51,5 +51,5 @@ task purge, "Removing service from system":
     exec selfExe() & " " & dir & "/res/uninstall/" & hostOS & ".nims"
 
 task clean, "clean artifacts":
-    exec "rm -rf psensepkg psense tests/test1 here.pid"
+    exec "rm -rf nsensepkg nsense tests/test1 here.pid"
     echo "Done"
