@@ -3,3 +3,4 @@ psense
 psensepkg/*
 tests/*
 !tests/*.nim*
+nfpm.yaml
