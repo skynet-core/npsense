@@ -5,11 +5,24 @@ on:
       - develop
     types: [closed]
 jobs:
-  commit:
+  test:
     runs-on: ubuntu-latest
+    steps:
+    - name: 'Check out code'
+      uses: actions/checkout@v2
+    - name: 'Run tests'
+      uses: skynet-core/nim@v1.2
+      with:
+        command: 'nimble test -y'
+  commit:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    needs: test
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
     - name: Commit new release
       id: commit
       shell: bash
@@ -23,26 +36,26 @@ jobs:
           fix/* )
             let fix++
             new_ver="$major.$minor.$fix"
-            echo $new_ver > ./RELEASE
+            echo -n $new_ver > ./RELEASE
             ;;
           feature/* )
             let minor++
             new_ver="$major.$minor.$fix"
-            echo $new_ver > ./RELEASE
+            echo -n $new_ver > ./RELEASE
             ;;
           next/* ) 
             let major++
             new_ver="$major.$minor.$fix"
-            echo $new_ver > ./RELEASE
+            echo -n $new_ver > ./RELEASE
           ;;
           * ) exit 1;;
         esac
     - name: Commit RELEASE file
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Apply RELEASE update
+        commit_message: 'trigger release'
         branch: develop
-        commit_user_name: GitHub Action Bot
+        commit_user_name: skynet-core
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:

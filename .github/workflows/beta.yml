@@ -4,14 +4,10 @@ on:
     types: [beta-release]
 jobs:
   build:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - name: Dump some vars
-      run: |
-        echo "BASE REF: ${{ toJSON(github.event.pull_request) }}"
     - name: Build static binaries
       uses: skynet-core/nim@v1.2
     - name: Archive nsense binary
@@ -36,6 +32,7 @@ jobs:
       shell: bash
       run: |
         version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        echo -n "" > ./changelog.yaml
         cat ./nfpm.template.yaml | sed -e "s|@version|$version|g" > ./nfpm.yaml
         echo "::set-output name=version::$version"
     - name: Create deb package
@@ -70,6 +67,6 @@ jobs:
         VERSION: ${{ steps.nfpm-cfg.outputs.version }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        github-release -v release -u skynet-core -r nsense -t v$TAG-beta -n $LABEL
-        github-release -v upload -u skynet-core -r nsense -t v$TAG-beta -f *.deb -n ${{ steps.deb-pack.outputs.package }}
-        github-release -v upload -u skynet-core -r nsense -t v$TAG-beta -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
+        github-release -v release -u skynet-core -r nord-sense -t v$VERSION-beta -n $LABEL
+        github-release -v upload -u skynet-core -r nord-sense -t v$VERSION-beta -f *.deb -n ${{ steps.deb-pack.outputs.package }}
+        github-release -v upload -u skynet-core -r nord-sense -t v$VERSION-beta -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
