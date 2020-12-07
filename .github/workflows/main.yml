@@ -33,7 +33,7 @@ jobs:
       id: nfpm-cfg
       shell: bash
       env:
-          GIT_REF: 
+          GIT_REF: ${{ github.ref }}
       run: |
         git_tag=""
         if [[ "$GIT_REF" == *"refs/tags/"* ]]; then
