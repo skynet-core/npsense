@@ -56,7 +56,7 @@ jobs:
         packager: deb
     - name: Create rpm package
       id: rpm-pack
-      uses: skynet-core/nfpm@v1.2
+      uses: skynet-core/nfpm@v1.3
       with:
         config: nfpm.yaml
         packager: rpm
@@ -80,4 +80,6 @@ jobs:
         TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo "PACKAGE: ${{ steps.deb-pack.outputs.package }}, TAG: $TAG, LABEL: $LABEL"
+        github-release -v release -u skynet-core -r npsense -t v$TAG -n $LABEL
+        github-release -v upload -u skynet-core -r npsense -t v$TAG -f *.deb -n ${{ steps.deb-pack.outputs.package }}
+        github-release -v upload -u skynet-core -r npsense -t v$TAG -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
