@@ -5,8 +5,7 @@
 [![last release](https://img.shields.io/github/release-date/skynet-core/nord-sense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/nord-sense/releases/latest)
 
 ## Daemon service for controlling gaming laptops fans speed on any Linux OS
-
-<h1 align="left"></h1>
+<h1 align="center">
         <img src="./cold.svg" alt="NSense Logo" width="306" height="344"/>
 </p>
 
