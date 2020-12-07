@@ -42,11 +42,13 @@ jobs:
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
         echo "::set-output name=TAG::$git_tag"
     - name: Create deb package
+      id: deb-pack
       uses: skynet-core/nfpm@v1.2
       with:
         config: nfpm.yaml
         packager: deb
     - name: Create rpm package
+      id: rpm-pack
       uses: skynet-core/nfpm@v1.2
       with:
         config: nfpm.yaml
@@ -68,4 +70,6 @@ jobs:
     - name: Publish builds
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      run: github-release info -u skynet-core -r npsense
+      run: |
+        github-release upload -u skynet-core -r npsense -t v${{ steps.nfpm-cfg.outputs.TAG }} -f ${{ steps.deb-pack.outputs.package }}
+        github-release upload -u skynet-core -r npsense -t v${{ steps.nfpm-cfg.outputs.TAG }} -f ${{ steps.rpm-pack.outputs.package }}
