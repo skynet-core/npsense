@@ -67,6 +67,6 @@ jobs:
         VERSION: ${{ steps.nfpm-cfg.outputs.version }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        github-release -v release -u skynet-core -r nsense -t v$VERSION-beta -n $LABEL
-        github-release -v upload -u skynet-core -r nsense -t v$VERSION-beta -f *.deb -n ${{ steps.deb-pack.outputs.package }}
-        github-release -v upload -u skynet-core -r nsense -t v$VERSION-beta -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
+        github-release -v release -u skynet-core -r nord-sense -t v$VERSION-beta -n $LABEL
+        github-release -v upload -u skynet-core -r nord-sense -t v$VERSION-beta -f *.deb -n ${{ steps.deb-pack.outputs.package }}
+        github-release -v upload -u skynet-core -r nord-sense -t v$VERSION-beta -f *.rpm -n ${{ steps.rpm-pack.outputs.package }}
