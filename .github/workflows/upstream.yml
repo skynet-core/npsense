@@ -10,6 +10,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
     - name: Commit new release
       id: commit
       shell: bash
@@ -42,7 +44,7 @@ jobs:
       with:
         commit_message: Apply RELEASE update
         branch: develop
-        commit_user_name: GitHub Action Bot
+        commit_user_name: skynet-core
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:

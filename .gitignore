@@ -4,3 +4,4 @@ nsensepkg/*
 tests/*
 !tests/*.nim*
 nfpm.yaml
+changelog.*
