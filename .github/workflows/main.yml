@@ -33,10 +33,10 @@ jobs:
       id: nfpm-cfg
       shell: bash
       env:
-          GIT_REF: ${{ github.ref }}
+          GIT_REF: 
       run: |
         if [[ "$GIT_REF" == "refs/tags/"* ]]; then
-          git_tag=$(GIT_REF:##*/)
+          git_tag="${GIT_REF:##*/}"
         else
           git_tag=$(cat psense.nimble | grep version | head -n 1 | cut -d '=' -f2 | awk '{$1=$1};1' | sed 's|\"||g')
         fi
