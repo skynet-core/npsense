@@ -44,7 +44,7 @@ jobs:
       with:
         commit_message: Apply RELEASE update
         branch: develop
-        commit_user_name: GitHub Action Bot
+        commit_user_name: skynet-core
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:
