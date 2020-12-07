@@ -1,13 +1,12 @@
-name: "Build and package PSense project"
+name: release
 on:
-  pull_request:
-    branches:
-      - development
-    types: [closed]
+  push:
+    tags: 
+      - 'v*.*.*'
+      - 'v*.*.*-beta'
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -36,12 +35,7 @@ jobs:
       env:
           GIT_REF: ${{ github.ref }}
       run: |
-        git_tag=""
-        if [[ "$GIT_REF" == *"refs/tags/"* ]]; then
-          git_tag="$(echo ${GIT_REF##*/} | tr -d 'v')"
-        else
-          git_tag=$(cat psense.nimble | grep version | head -n 1 | cut -d '=' -f2 | awk '{$1=$1};1' | sed 's|\"||g')
-        fi
+        git_tag="$(echo ${GIT_REF##*/} | tr -d 'v')"
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
         echo "::set-output name=TAG::$git_tag"
         if [[ "$git_tag" == *"-beta"* ]]; then
