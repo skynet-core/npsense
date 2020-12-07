@@ -1,4 +1,9 @@
 # NPSense
+
+[![test](https://img.shields.io/github/workflow/status/skynet-core/npsense/test?style=for-the-badge)](https://github.com/skynet-core/npsense/actions?query=workflow%3Atest)
+[![last commit](https://img.shields.io/github/last-commit/skynet-core/npsense?style=for-the-badge)](https://github.com/skynet-core/npsense/releases/latest)
+[![last release](https://img.shields.io/github/release-date/skynet-core/npsense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/npsense/releases/latest)
+
 ## Predator-Sense like service for controlling Acer gaming laptops fans speed on any Linux OS
 All contributors 👨‍💻👩‍💻 are welcome. Donate💸💳 and tips☕ are greatly acceptable
 
