@@ -19,6 +19,7 @@ jobs:
           ${{ github.workspace }}/psensepkg/cli/psensectl
   package:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - name: Check out code
       uses: actions/checkout@v2
