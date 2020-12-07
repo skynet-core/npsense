@@ -69,16 +69,15 @@ jobs:
     - name: Install Github-Release
       shell: bash
       run: go get github.com/github-release/github-release
-    - name: Publish builds
+    - name: Draft new release
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      run: |
-        github-release release --user skynet-core \
-          --repo npsense \
-          --tag "v${{ steps.nfpm-cfg.outputs.TAG }}" && \
-        github-release upload -u skynet-core -r npsense \ 
-          --tag "v${{ steps.nfpm-cfg.outputs.TAG }}" \
-          --file ${{ steps.deb-pack.outputs.package }} && \
-        github-release upload -u skynet-core -r npsense \
-          --tag "v${{ steps.nfpm-cfg.outputs.TAG }}" \
-          --file ${{ steps.rpm-pack.outputs.package }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: github-release -v release -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}"
+    - name: Upload dev package
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: github-release -v upload -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}" -f ${{ steps.deb-pack.outputs.package }}
+    - name: Upload rpm package
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: github-release -v upload -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}" -f ${{ steps.rpm-pack.outputs.package }}
