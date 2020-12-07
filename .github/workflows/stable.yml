@@ -1,11 +1,12 @@
-name: release
+name: beta-release
 on:
-  push:
-    tags: 
-      - 'v*.*.*'
-      - 'v*.*.*-beta'
+  pull_request:
+    branches:
+      - master
+    types: [closed]
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -32,17 +33,10 @@ jobs:
     - name: Generate nfpm config
       id: nfpm-cfg
       shell: bash
-      env:
-          GIT_REF: ${{ github.ref }}
       run: |
-        git_tag="$(echo ${GIT_REF##*/} | tr -d 'v')"
-        cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
-        echo "::set-output name=TAG::$git_tag"
-        if [[ "$git_tag" == *"-beta"* ]]; then
-          echo "::set-output name=LABEL::Beta-release"
-        else
-          echo "::set-output name=LABEL::Stable-release"
-        fi
+        version="$(cat RELEASE | awk '{$1=$1};1')"
+        cat ./nfpm.template.yaml | sed -e "s|@version|$version|g" > ./nfpm.yaml
+        echo "::set-output name=version::$version"
     - name: Create deb package
       id: deb-pack
       uses: skynet-core/nfpm@v1.3
@@ -71,8 +65,8 @@ jobs:
       run: go get github.com/github-release/github-release
     - name: Draft new release
       env:
-        LABEL: ${{ steps.nfpm-cfg.outputs.LABEL }}
-        TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
+        LABEL: 'release'
+        VERSION: ${{ steps.nfpm-cfg.outputs.version }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         github-release -v release -u skynet-core -r npsense -t v$TAG -n $LABEL

@@ -1,7 +1,7 @@
 name: "psense"
 arch: "amd64"
 platform: "linux"
-version: "@git_tag"
+version: "@version"
 section: "system"
 priority: "extra"
 maintainer: "Vasyl Zaichenko <skynet.vasyl@gmail.com>"
