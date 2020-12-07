@@ -1,8 +1,8 @@
 # NSense Fan Control
 
-[![test](https://img.shields.io/github/workflow/status/skynet-core/nsense/test?style=for-the-badge)](https://github.com/skynet-core/nsense/actions?query=workflow%3Atest)
-[![last commit](https://img.shields.io/github/last-commit/skynet-core/nsense?style=for-the-badge)](https://github.com/skynet-core/nsense/releases/latest)
-[![last release](https://img.shields.io/github/release-date/skynet-core/nsense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/nsense/releases/latest)
+[![test](https://img.shields.io/github/workflow/status/skynet-core/nord-sense/test?style=for-the-badge)](https://github.com/skynet-core/nord-sense/actions?query=workflow%3Atest)
+[![last commit](https://img.shields.io/github/last-commit/skynet-core/nord-sense?style=for-the-badge)](https://github.com/skynet-core/nord-sense/releases/latest)
+[![last release](https://img.shields.io/github/release-date/skynet-core/nord-sense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/nord-sense/releases/latest)
 
 ## Daemon service for controlling gaming laptops fans speed on any Linux OS
 
