@@ -36,12 +36,9 @@ jobs:
           GIT_REF: ${{ github.ref }}
       run: |
         git_tag=""
-        echo "GIT_REF: $GIT_REF"
         if [[ "$GIT_REF" == *"refs/tags/"* ]]; then
-          echo "OOOOOKKKKKK!!!"
-          git_tag="${GIT_REF:##*/}"
+          git_tag="${GIT_REF##*/}"
         else
-          echo "BADDDDDD!!!!"
           git_tag=$(cat psense.nimble | grep version | head -n 1 | cut -d '=' -f2 | awk '{$1=$1};1' | sed 's|\"||g')
         fi
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
@@ -79,13 +76,21 @@ jobs:
       run: go get github.com/github-release/github-release
     - name: Draft new release
       env:
+        LABEL: ${{ steps.nfpm-cfg.outputs.LABEL }}
+        TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: github-release -v release -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}" -n ${{ steps.nfpm-cfg.outputs.LABEL }}
+      run: github-release -v release -u skynet-core -r npsense -t v$TAG -n $LABEL
     - name: Upload dev package
       env:
+        LABEL: ${{ steps.nfpm-cfg.outputs.LABEL }}
+        TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: github-release -v upload -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}" -f ${{ steps.deb-pack.outputs.package }}
+        FILE: ${{ steps.deb-pack.outputs.package }}
+      run: github-release -v upload -u skynet-core -r npsense -t v$TAG -f $FILE
     - name: Upload rpm package
       env:
+        LABEL: ${{ steps.nfpm-cfg.outputs.LABEL }}
+        TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: github-release -v upload -u skynet-core -r npsense -t "v${{ steps.nfpm-cfg.outputs.TAG }}" -f ${{ steps.rpm-pack.outputs.package }}
+        FILE: ${{ steps.rpm-pack.outputs.package }}
+      run: github-release -v upload -u skynet-core -r npsense -t v$TAG -f $FILE
