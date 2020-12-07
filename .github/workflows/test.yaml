@@ -5,6 +5,7 @@ on:
       - fix/*
       - feature/*
       - next/*
+      - develop
 jobs:
   test:
     runs-on: ubuntu-latest
