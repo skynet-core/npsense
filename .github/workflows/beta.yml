@@ -11,6 +11,9 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+    - name: Dump some vars
+      run: |
+        echo "BASE REF: ${{ toJSON(github.event.pull_request) }}"
     - name: Build static binaries
       uses: skynet-core/nim@v1.2
     - name: Archive nsense binary
