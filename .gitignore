@@ -1,6 +1,6 @@
 *.pid
-psense
-psensepkg/*
+nsense
+nsensepkg/*
 tests/*
 !tests/*.nim*
 nfpm.yaml

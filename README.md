@@ -1,8 +1,8 @@
 # NSense Fan Control
 
-[![test](https://img.shields.io/github/workflow/status/skynet-core/npsense/test?style=for-the-badge)](https://github.com/skynet-core/npsense/actions?query=workflow%3Atest)
-[![last commit](https://img.shields.io/github/last-commit/skynet-core/npsense?style=for-the-badge)](https://github.com/skynet-core/npsense/releases/latest)
-[![last release](https://img.shields.io/github/release-date/skynet-core/npsense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/npsense/releases/latest)
+[![test](https://img.shields.io/github/workflow/status/skynet-core/nsense/test?style=for-the-badge)](https://github.com/skynet-core/nsense/actions?query=workflow%3Atest)
+[![last commit](https://img.shields.io/github/last-commit/skynet-core/nsense?style=for-the-badge)](https://github.com/skynet-core/nsense/releases/latest)
+[![last release](https://img.shields.io/github/release-date/skynet-core/nsense?color=red&logoColor=green&style=for-the-badge)](https://github.com/skynet-core/nsense/releases/latest)
 
 ## Daemon service for controlling gaming laptops fans speed on any Linux OS
 
@@ -20,7 +20,7 @@
 
 ## Installation
 
-Download package for [latest release](https://github.com/skynet-core/npsense/releases/latest) and install it using your package manager 
+Download package for [latest release](https://github.com/skynet-core/nsense/releases/latest) and install it using your package manager 
 
 ### Debian derivatives (Ubuntu, Debian etc.)
 
@@ -33,8 +33,8 @@ Download package for [latest release](https://github.com/skynet-core/npsense/rel
         sudo rpm -e nsense // remove
 ## How to build
 
-        cd /tmp && git clone git@github.com:skynet-core/npsense.git
-        cd ./npsense && nimble build -d:release
+        cd /tmp && git clone git@github.com:skynet-core/nsense.git
+        cd ./nsense && nimble build -d:release
         nimble setup --configName:AcerP515-51   // install files into your system
         nimble purge                            // uninstall files from system
 

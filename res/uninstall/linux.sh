@@ -3,14 +3,14 @@
 set -e
 set -x
 
-echo "PSense Linux uninstaller script"
-systemctl stop psense
-systemctl disable psense
-systemctl disable psense-sleep
-rm -f /etc/systemd/system/psense*
+echo "nsense Linux uninstaller script"
+systemctl stop nsense
+systemctl disable nsense
+systemctl disable nsense-sleep
+rm -f /etc/systemd/system/nsense*
 
-if [ -d /opt/psense ]; then
-    rm -rf /opt/psense
+if [ -d /opt/nsense ]; then
+    rm -rf /opt/nsense
 fi
 
 systemctl daemon-reload

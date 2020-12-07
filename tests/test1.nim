@@ -6,7 +6,7 @@
 # To run these tests, simply execute `nimble test`.
 
 import unittest
-import psensepkg/config
+import nsensepkg/config
 import streams
 import yaml
 

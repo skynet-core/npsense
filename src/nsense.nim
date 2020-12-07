@@ -3,10 +3,10 @@
 import argparse, os, posix, strutils, strformat
 import tables, bitops,yaml ,selectors, times
 
-import psensepkg/port
-import psensepkg/config
-import psensepkg/misc
-import psensepkg/state
+import nsensepkg/port
+import nsensepkg/config
+import nsensepkg/misc
+import nsensepkg/state
 
 proc killService(pid: uint): void = 
   discard kill(cint(pid), SIGKILL)
@@ -21,9 +21,9 @@ proc initZones(zones: seq[Zone]): seq[ZoneState] =
 
 when isMainModule:
   let pid = getCurrentProcessId()
-  var p = newParser("psense"):
+  var p = newParser("nsense"):
     option("-c","--config", default = some("config.yaml"), help = "config file's path")
-    option("-p","--pidfile",default = some("/run/psense.pid"), help = "pifile's path")
+    option("-p","--pidfile",default = some("/run/nsense.pid"), help = "pifile's path")
     flag("-f","--force", help = "force daemon start")
 
   let opts = p.parse(commandLineParams())
