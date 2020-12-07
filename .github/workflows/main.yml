@@ -50,7 +50,7 @@ jobs:
         fi
     - name: Create deb package
       id: deb-pack
-      uses: skynet-core/nfpm@v1.2
+      uses: skynet-core/nfpm@v1.3
       with:
         config: nfpm.yaml
         packager: deb

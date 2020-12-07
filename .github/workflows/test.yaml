@@ -9,4 +9,4 @@ jobs:
     - name: 'Run tests'
       uses: skynet-core/nim@v1.2
       with:
-        command: 'nimble test'
+        command: 'nimble test -y'
