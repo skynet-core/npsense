@@ -37,7 +37,7 @@ jobs:
       run: |
         git_tag=""
         if [[ "$GIT_REF" == *"refs/tags/"* ]]; then
-          git_tag="${GIT_REF##*/}"
+          git_tag="$(echo ${GIT_REF##*/} | tr -d 'v')"
         else
           git_tag=$(cat psense.nimble | grep version | head -n 1 | cut -d '=' -f2 | awk '{$1=$1};1' | sed 's|\"||g')
         fi
@@ -80,6 +80,4 @@ jobs:
         TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        github-release -v release -u skynet-core -r npsense -t v$TAG -n $LABEL
-        github-release -v upload -u skynet-core -r npsense -t v$TAG -f *.deb
-        github-release -v upload -u skynet-core -r npsense -t v$TAG -f *.rpm
+        echo "PACKAGE: ${{ steps.deb-pack.outputs.package }}, TAG: $TAG, LABEL: $LABEL"
