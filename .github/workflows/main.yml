@@ -42,10 +42,22 @@ jobs:
         cat ./nfpm.template.yaml | sed -e "s|@git_tag|$git_tag|g" > ./nfpm.yaml
         echo "::set-output name=TAG::$git_tag"
     - name: Create deb package
-      uses: skynet-core/nfpm@v1.0
+      uses: skynet-core/nfpm@v1.2
       with:
         config: nfpm.yaml
         packager: deb
+    - name: Create rpm package
+      uses: skynet-core/nfpm@v1.2
+      with:
+        config: nfpm.yaml
+        packager: rpm
+    - name: Archive psense packages
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: |
+          ${{ github.workspace }}/*.deb
+          ${{ github.workspace }}/*.rpm
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
