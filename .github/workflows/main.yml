@@ -79,18 +79,7 @@ jobs:
         LABEL: ${{ steps.nfpm-cfg.outputs.LABEL }}
         TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: github-release -v release -u skynet-core -r npsense -t v$TAG -n $LABEL
-    - name: Upload dev package
-      env:
-        LABEL: ${{ steps.nfpm-cfg.outputs.LABEL }}
-        TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        FILE: ${{ steps.deb-pack.outputs.package }}
-      run: github-release -v upload -u skynet-core -r npsense -t v$TAG -f $FILE
-    - name: Upload rpm package
-      env:
-        LABEL: ${{ steps.nfpm-cfg.outputs.LABEL }}
-        TAG: ${{ steps.nfpm-cfg.outputs.TAG }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        FILE: ${{ steps.rpm-pack.outputs.package }}
-      run: github-release -v upload -u skynet-core -r npsense -t v$TAG -f $FILE
+      run: |
+        github-release -v release -u skynet-core -r npsense -t v$TAG -n $LABEL
+        github-release -v upload -u skynet-core -r npsense -t v$TAG -f *.deb
+        github-release -v upload -u skynet-core -r npsense -t v$TAG -f *.rpm
