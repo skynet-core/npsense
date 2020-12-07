@@ -36,7 +36,7 @@ jobs:
           GIT_REF: ${{ github.ref }}
       run: |
         ls -la
-        if [[ $a == "*refs/tags/*" ]]; then
+        if [[ "$GIT_REF" == "*refs/tags/*" ]]; then
           git_tag=$(git describe --tags `git rev-list --tags --max-count=1` | tr -d 'v')
         else
           git_tag=$(cat psense.nimble | grep version | head -n 1 | cut -d '=' -f2 | awk '{$1=$1};1' | sed 's|\"||g')
