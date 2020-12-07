@@ -42,7 +42,7 @@ jobs:
     - name: Commit RELEASE file
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Apply RELEASE update
+        commit_message: 'trigger release'
         branch: develop
         commit_user_name: skynet-core
     - name: Trigger repository custom event
