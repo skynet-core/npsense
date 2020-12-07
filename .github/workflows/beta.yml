@@ -4,7 +4,6 @@ on:
     types: [beta-release]
 jobs:
   build:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
