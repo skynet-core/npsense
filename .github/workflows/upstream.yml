@@ -5,19 +5,9 @@ on:
       - develop
     types: [closed]
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - name: 'Check out code'
-      uses: actions/checkout@v2
-    - name: 'Run tests'
-      uses: skynet-core/nim@v1.2
-      with:
-        command: 'nimble test -y'
   commit:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    needs: test
     steps:
     - name: Check out code
       uses: actions/checkout@v2
