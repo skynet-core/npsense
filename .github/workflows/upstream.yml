@@ -9,11 +9,11 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
+    - name: 'Check out code'
       uses: actions/checkout@v2
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
-    - name: Commit new release
+    - name: 'Commit new release'
       id: commit
       shell: bash
       run: |
@@ -27,20 +27,23 @@ jobs:
             let fix++
             new_ver="$major.$minor.$fix"
             echo -n $new_ver > ./RELEASE
+            echo "::set-output name=version::$new_ver"
             ;;
           feature/* )
             let minor++
             new_ver="$major.$minor.$fix"
             echo -n $new_ver > ./RELEASE
+            echo "::set-output name=version::$new_ver"
             ;;
           next/* ) 
             let major++
             new_ver="$major.$minor.$fix"
             echo -n $new_ver > ./RELEASE
+            echo "::set-output name=version::$new_ver"
           ;;
-          * ) exit 1;;
+          * ) exit 1
+          ;;
         esac
-        echo "::set-output name=version::$new_ver"
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
