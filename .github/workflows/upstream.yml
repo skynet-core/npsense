@@ -46,9 +46,9 @@ jobs:
         new_ver="$major.$minor.$fix"
         echo -n $new_ver > ./RELEASE
     - name: 'Get version number'
-      id: meta
+      id: meta-run
       run: |
-        version="v$(cat RELEASE | awk '{$1=$1};1')"
+        version="v$(cat ./RELEASE | awk '{$1=$1};1')"
         echo "::set-output name=VERSION::$version"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -57,10 +57,11 @@ jobs:
     - name: Install changelog tool
       run: go get github.com/goreleaser/chglog/cmd/chglog
     - name: Generate CHANGELOG.md
-      shell: sh
+      env:
+        VERSION: ${{ steps.meta-run.output.VERSION }}
       run: |
-        echo "INFO: version ${{ steps.meta.output.VERSION }}"
-        chglog add --version ${{ steps.meta.output.VERSION }}
+        echo "INFO: version $VERSION"
+        chglog add --version $VERSION
         chglog format --template repo > CHANGELOG.md
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
@@ -68,7 +69,7 @@ jobs:
         commit_message: 'chore: pre-release'
         branch: develop
         commit_user_name: skynet-core
-        tagging_message: "${{ steps.meta.output.VERSION }}"
+        tagging_message: "${{ steps.meta-run.output.VERSION }}"
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:
