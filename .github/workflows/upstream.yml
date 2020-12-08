@@ -13,50 +13,43 @@ jobs:
       uses: actions/checkout@v2
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
-    - name: 'Commit new release'
-      id: commit
+    - name: 'Increment fix version'
+      if: ${{ startsWith(github.event.pull_request.head.ref,'fix/') }}
       shell: bash
       run: |
-        head_ref="${{ github.event.pull_request.head.ref }}"
         version="$(cat ./RELEASE | awk '{$1=$1};1')"
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
-        case $head_ref in
-          fix/* )
-            
-            let fix++
-            new_ver="$major.$minor.$fix"
-            echo -n $new_ver > ./RELEASE
-            echo "::set-output name=version::$new_ver"
-            ;;
-          feature/* )
-            
-            let minor++
-            new_ver="$major.$minor.$fix"
-            echo -n $new_ver > ./RELEASE
-            echo "::set-output name=version::$new_ver"
-            ;;
-          next/* )
-            
-            let major++
-            new_ver="$major.$minor.$fix"
-            echo -n $new_ver > ./RELEASE
-            echo "::set-output name=version::$new_ver"
-          ;;
-          * )
-
-          echo "ERROR: unhandled branch"
-          exit 1
-          ;;
-        esac
-    - name: Commit changes file
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: 'chore: pre-release'
-        branch: develop
-        commit_user_name: skynet-core
-        tagging_message: "v${{ steps.commit.outputs.version }}"
+        let fix++
+        new_ver="$major.$minor.$fix"
+        echo -n $new_ver > ./RELEASE
+    - name: 'Increment minor version'
+      if: ${{ startsWith(github.event.pull_request.head.ref,'feature/') }}
+      shell: bash
+      run: |
+        version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        fix=$(echo $version | cut -d '.' -f3)
+        minor=$(echo $version | cut -d '.' -f2)
+        major=$(echo $version | cut -d '.' -f1)
+        let minor++
+        new_ver="$major.$minor.$fix"
+        echo -n $new_ver > ./RELEASE
+    - name: 'Increment major version'
+      if: ${{ startsWith(github.event.pull_request.head.ref,'next/') }}
+      shell: bash
+      run: |
+        version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        fix=$(echo $version | cut -d '.' -f3)
+        minor=$(echo $version | cut -d '.' -f2)
+        major=$(echo $version | cut -d '.' -f1)
+        let major++
+        new_ver="$major.$minor.$fix"
+        echo -n $new_ver > ./RELEASE
+    - name: 'Get version number'
+      id: meta
+      shell: bash
+      run: echo "::set-output name=VERSION::$(cat ./RELEASE | awk '{$1=$1};1')"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
@@ -67,7 +60,7 @@ jobs:
     - name: Generate CHANGELOG.md
       shell: bash
       env:
-        VERSION: "v${{ steps.commit.outputs.version }}"
+        VERSION: v${{ steps.meta.output.VERSION }}
       run: |
         echo "INFO: version $VERSION"
         chglog add --version $VERSION
@@ -78,7 +71,7 @@ jobs:
         commit_message: 'chore: pre-release'
         branch: develop
         commit_user_name: skynet-core
-        tagging_message: "v${{ steps.commit.outputs.version }}"
+        tagging_message: "v${{ steps.meta.output.VERSION }}"
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:
