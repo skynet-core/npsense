@@ -40,15 +40,31 @@ jobs:
           ;;
           * ) exit 1;;
         esac
-    - name: Commit RELEASE file
+        echo "::set-output name=version::$new_ver"
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.15
+    - name: Install changelog tool
+      shell: bash
+      run: go get github.com/goreleaser/chglog/cmd/chglog
+    - name: Generate CHANGELOG.md
+      shell: bash
+      env:
+        VERSION: "v${{ steps.commit.outputs.version }}"
+      run: |
+        chglog add --version $VERSION
+        chglog format --template repo > CHANGELOG.md
+    - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: 'trigger release'
+        commit_message: 'chore: pre-release'
         branch: develop
         commit_user_name: skynet-core
+        tagging_message: "v${{ steps.commit.outputs.version }}"
     - name: Trigger repository custom event
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.ACCESS_TOKEN }}
-        event-type: 'beta-release'
+        event-type: 'pre-release'
         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

@@ -30,12 +30,17 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: binaries
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.15
     - name: Generate nfpm config
       id: nfpm-cfg
       shell: bash
       run: |
+        go get github.com/goreleaser/chglog/cmd/chglog
         version="$(cat RELEASE | awk '{$1=$1};1')"
-        echo -n "" > ./changelog.yaml
+        chglog add --version v$version
         cat ./nfpm.template.yaml | sed -e "s|@version|$version|g" > ./nfpm.yaml
         echo "::set-output name=version::$version"
     - name: Create deb package
@@ -57,10 +62,6 @@ jobs:
         path: |
           ${{ github.workspace }}/*.deb
           ${{ github.workspace }}/*.rpm
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.15
     - name: Install Github-Release
       shell: bash
       run: go get github.com/github-release/github-release
