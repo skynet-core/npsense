@@ -6,7 +6,7 @@ section: "system"
 priority: "extra"
 maintainer: "Vasyl Zaichenko <skynet.vasyl@gmail.com>"
 description: |
-  nsense provides efficient control for fans on Gaming Laptops. 
+  Nord Sense provides efficient control for fans on Gaming Laptops. 
 vendor: "Skynet Core Ltd."
 homepage: "https://github.com/skynet-core/nsense"
 license: "MIT"
