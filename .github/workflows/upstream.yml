@@ -47,9 +47,13 @@ jobs:
         echo -n $new_ver > ./RELEASE
     - name: 'Get version number'
       id: meta
+<<<<<<< HEAD
       run: |
         version=$(cat ./RELEASE | awk '{$1=$1};1')
         echo "::set-output name=VERSION::v$version"
+=======
+      run: echo "::set-output name=VERSION::v$(cat ./RELEASE | awk '{$1=$1};1')"
+>>>>>>> 93f31bfdb4d2ff656532d3348458e4cda7fbfe04
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
