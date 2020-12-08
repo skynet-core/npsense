@@ -24,24 +24,30 @@ jobs:
         major=$(echo $version | cut -d '.' -f1)
         case $head_ref in
           fix/* )
+            
             let fix++
             new_ver="$major.$minor.$fix"
             echo -n $new_ver > ./RELEASE
             echo "::set-output name=version::$new_ver"
             ;;
           feature/* )
+            
             let minor++
             new_ver="$major.$minor.$fix"
             echo -n $new_ver > ./RELEASE
             echo "::set-output name=version::$new_ver"
             ;;
-          next/* ) 
+          next/* )
+            
             let major++
             new_ver="$major.$minor.$fix"
             echo -n $new_ver > ./RELEASE
             echo "::set-output name=version::$new_ver"
           ;;
-          * ) exit 1
+          * )
+
+          echo "ERROR: unhandled branch"
+          exit 1
           ;;
         esac
     - name: Commit changes file
