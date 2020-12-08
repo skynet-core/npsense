@@ -48,7 +48,7 @@ jobs:
     - name: 'Get version number'
       id: meta-run
       run: |
-        version="v$(cat RELEASE | awk '{$1=$1};1')"
+        version="v$(cat ./RELEASE | awk '{$1=$1};1')"
         echo "::set-output name=VERSION::$version"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
