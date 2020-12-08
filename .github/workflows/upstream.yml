@@ -21,7 +21,7 @@ jobs:
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
-        let fix++
+        fix=$(( $fix + 1 ))
         new_ver="$major.$minor.$fix"
         echo -n $new_ver > ./RELEASE
     - name: 'Increment minor version'
@@ -32,7 +32,7 @@ jobs:
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
-        let minor++
+        minor=$(( $minor + 1 ))
         new_ver="$major.$minor.$fix"
         echo -n $new_ver > ./RELEASE
     - name: 'Increment major version'
@@ -43,7 +43,7 @@ jobs:
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
-        let major++
+        major=$(( $major + 1 ))
         new_ver="$major.$minor.$fix"
         echo -n $new_ver > ./RELEASE
     - name: 'Get version number'
