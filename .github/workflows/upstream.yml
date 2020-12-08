@@ -1,0 +1,54 @@
+name: release-trigger
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
+jobs:
+  commit:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+    - name: Commit new release
+      id: commit
+      shell: bash
+      run: |
+        head_ref="${{ github.event.pull_request.head.ref }}"
+        version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        fix=$(echo $version | cut -d '.' -f3)
+        minor=$(echo $version | cut -d '.' -f2)
+        major=$(echo $version | cut -d '.' -f1)
+        case $head_ref in
+          fix/* )
+            let fix++
+            new_ver="$major.$minor.$fix"
+            echo -n $new_ver > ./RELEASE
+            ;;
+          feature/* )
+            let minor++
+            new_ver="$major.$minor.$fix"
+            echo -n $new_ver > ./RELEASE
+            ;;
+          next/* ) 
+            let major++
+            new_ver="$major.$minor.$fix"
+            echo -n $new_ver > ./RELEASE
+          ;;
+          * ) exit 1;;
+        esac
+    - name: Commit RELEASE file
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'trigger release'
+        branch: develop
+        commit_user_name: skynet-core
+    - name: Trigger repository custom event
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}
+        event-type: 'beta-release'
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

@@ -1,0 +1,31 @@
+name: "nsense"
+arch: "amd64"
+platform: "linux"
+version: "@version"
+section: "system"
+priority: "extra"
+maintainer: "Vasyl Zaichenko <skynet.vasyl@gmail.com>"
+description: |
+  nsense provides efficient control for fans on Gaming Laptops. 
+vendor: "Skynet Core Ltd."
+homepage: "https://github.com/skynet-core/nsense"
+license: "MIT"
+changelog: "changelog.yaml"
+files:
+  ./nsense: "/opt/nsense/bin/nsense"
+  ./nsensepkg/cli/nsensectl: "/opt/nsense/bin/nsensectl"
+  ./configs: "/opt/nsense/share/configs"
+  ./res/service: "/opt/nsense/share/service"
+config_files:
+symlinks:
+  /opt/nsense/bin/nsense: "/usr/local/bin/nsense"
+  /opt/nsense/bin/nsensectl: "/usr/local/bin/nsensectl"
+overrides:
+  rpm:
+    scripts:
+      preinstall: ./res/scripts/preinstall.sh
+      postremove: ./res/scripts/postremove.sh
+  deb:
+    scripts:
+      postinstall: ./res/scripts/postinstall.sh
+      preremove: ./res/scripts/preremove.sh
