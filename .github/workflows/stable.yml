@@ -20,7 +20,7 @@ jobs:
         path: |
           ${{ github.workspace }}/nsense
           ${{ github.workspace }}/nsensepkg/cli/nsensectl
-  package:
+  release:
     runs-on: ubuntu-latest
     needs: build
     steps:
