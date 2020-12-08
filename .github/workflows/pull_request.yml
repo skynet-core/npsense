@@ -14,7 +14,7 @@ jobs:
       uses: skynet-core/nim@v1.2
       with:
         command: 'nimble test -y'
-  build:
+  pre-build:
     runs-on: ubuntu-latest
     needs: test
     steps:
