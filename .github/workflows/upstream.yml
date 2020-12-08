@@ -17,38 +17,38 @@ jobs:
       if: ${{ startsWith(github.event.pull_request.head.ref,'fix/') }}
       shell: sh
       run: |
-        version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        version="$(cat RELEASE | awk '{$1=$1};1')"
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
         fix=$(( $fix + 1 ))
         new_ver="$major.$minor.$fix"
-        echo -n $new_ver > ./RELEASE
+        echo -n $new_ver > RELEASE
     - name: 'Increment minor version'
       if: ${{ startsWith(github.event.pull_request.head.ref,'feature/') }}
       shell: sh
       run: |
-        version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        version="$(cat RELEASE | awk '{$1=$1};1')"
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
         minor=$(( $minor + 1 ))
         new_ver="$major.$minor.$fix"
-        echo -n $new_ver > ./RELEASE
+        echo -n $new_ver > RELEASE
     - name: 'Increment major version'
       if: ${{ startsWith(github.event.pull_request.head.ref,'next/') }}
       run: |
-        version="$(cat ./RELEASE | awk '{$1=$1};1')"
+        version="$(cat RELEASE | awk '{$1=$1};1')"
         fix=$(echo $version | cut -d '.' -f3)
         minor=$(echo $version | cut -d '.' -f2)
         major=$(echo $version | cut -d '.' -f1)
         major=$(( $major + 1 ))
         new_ver="$major.$minor.$fix"
-        echo -n $new_ver > ./RELEASE
+        echo -n $new_ver > RELEASE
     - name: 'Get version number'
       id: meta-run
       run: |
-        version="v$(cat ./RELEASE | awk '{$1=$1};1')"
+        version="v$(cat RELEASE | awk '{$1=$1};1')"
         echo "::set-output name=VERSION::$version"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -57,11 +57,10 @@ jobs:
     - name: Install changelog tool
       run: go get github.com/goreleaser/chglog/cmd/chglog
     - name: Generate CHANGELOG.md
-      env:
-        VERSION: ${{ steps.meta-run.output.VERSION }}
       run: |
-        echo "INFO: version $VERSION"
-        chglog add --version $VERSION
+        version="v$(cat RELEASE | awk '{$1=$1};1')"
+        echo "INFO: version $version"
+        chglog add --version $version
         chglog format --template repo > CHANGELOG.md
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
