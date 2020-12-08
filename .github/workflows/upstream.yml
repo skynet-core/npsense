@@ -15,11 +15,7 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}
     - name: 'Increment fix version'
       if: ${{ startsWith(github.event.pull_request.head.ref,'fix/') }}
-<<<<<<< HEAD
       shell: sh
-=======
-      shell: bash
->>>>>>> e7520bb12fa4c6957de34ade45d77ccb5d22bdda
       run: |
         version="$(cat ./RELEASE | awk '{$1=$1};1')"
         fix=$(echo $version | cut -d '.' -f3)
@@ -30,11 +26,7 @@ jobs:
         echo -n $new_ver > ./RELEASE
     - name: 'Increment minor version'
       if: ${{ startsWith(github.event.pull_request.head.ref,'feature/') }}
-<<<<<<< HEAD
       shell: sh
-=======
-      shell: bash
->>>>>>> e7520bb12fa4c6957de34ade45d77ccb5d22bdda
       run: |
         version="$(cat ./RELEASE | awk '{$1=$1};1')"
         fix=$(echo $version | cut -d '.' -f3)
@@ -45,11 +37,7 @@ jobs:
         echo -n $new_ver > ./RELEASE
     - name: 'Increment major version'
       if: ${{ startsWith(github.event.pull_request.head.ref,'next/') }}
-<<<<<<< HEAD
       shell: sh
-=======
-      shell: bash
->>>>>>> e7520bb12fa4c6957de34ade45d77ccb5d22bdda
       run: |
         version="$(cat ./RELEASE | awk '{$1=$1};1')"
         fix=$(echo $version | cut -d '.' -f3)
@@ -60,11 +48,7 @@ jobs:
         echo -n $new_ver > ./RELEASE
     - name: 'Get version number'
       id: meta
-<<<<<<< HEAD
       shell: sh
-=======
-      shell: bash
->>>>>>> e7520bb12fa4c6957de34ade45d77ccb5d22bdda
       run: echo "::set-output name=VERSION::$(cat ./RELEASE | awk '{$1=$1};1')"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
