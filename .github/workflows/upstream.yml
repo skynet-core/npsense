@@ -47,7 +47,9 @@ jobs:
         echo -n $new_ver > ./RELEASE
     - name: 'Get version number'
       id: meta
-      run: echo "::set-output name=VERSION::v$(cat ./RELEASE | awk '{$1=$1};1')"
+      run: |
+        version=$(cat ./RELEASE | awk '{$1=$1};1')
+        echo "::set-output name=VERSION::v$version"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
@@ -57,8 +59,8 @@ jobs:
     - name: Generate CHANGELOG.md
       shell: sh
       run: |
-        echo "INFO: version $VERSION"
-        chglog add --version $VERSION
+        echo "INFO: version ${{ steps.meta.output.VERSION }}"
+        chglog add --version ${{ steps.meta.output.VERSION }}
         chglog format --template repo > CHANGELOG.md
     - name: Commit changes file
       uses: stefanzweifel/git-auto-commit-action@v4
