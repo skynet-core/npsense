@@ -37,14 +37,15 @@ jobs:
             echo -n $new_ver > ./RELEASE
             echo "::set-output name=version::$new_ver"
             ;;
-          next/* ) 
+          next/* )
             
             let major++
             new_ver="$major.$minor.$fix"
             echo -n $new_ver > ./RELEASE
             echo "::set-output name=version::$new_ver"
           ;;
-          * ) 
+          * )
+
           echo "ERROR: unhandled branch"
           exit 1
           ;;
