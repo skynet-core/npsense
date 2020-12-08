@@ -41,6 +41,13 @@ jobs:
           * ) exit 1;;
         esac
         echo "::set-output name=version::$new_ver"
+    - name: Commit changes file
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'chore: pre-release'
+        branch: develop
+        commit_user_name: skynet-core
+        tagging_message: "v${{ steps.commit.outputs.version }}"
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
@@ -53,6 +60,7 @@ jobs:
       env:
         VERSION: "v${{ steps.commit.outputs.version }}"
       run: |
+        echo "INFO: version $VERSION"
         chglog add --version $VERSION
         chglog format --template repo > CHANGELOG.md
     - name: Commit changes file
