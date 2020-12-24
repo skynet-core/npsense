@@ -1,0 +1,19 @@
+name: testing-deploy
+on:
+  pull_request:
+    branches:
+      - testing/*
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Check out code'
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.ACCESS_TOKEN }}    
+    - name: 'Test SFTP access'
+      run: |
+        cat<<EOF | awk '{$1=$1};1' | base64 -d - >/tmp/id_ed25519_github
+        ${{ github.secrets.SSH_PRIV_KEY }}
+        EOF
+        sftp -i /tmp/id_ed25519_github github@wehack.network lpwd
