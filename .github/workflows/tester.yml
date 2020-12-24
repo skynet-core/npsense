@@ -31,4 +31,7 @@ jobs:
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
-        sftp github@wehack.network lpwd
+        sftp github@wehack.network <<EOF
+        lpwd
+        exit
+        EOF
