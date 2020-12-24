@@ -16,15 +16,15 @@ jobs:
         SECRET: '${{ secrets.KEY_PASS }}'
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
-        cat<<EOF>ask_pass.sh
+        cat<<EOF | tee $(pwd)/ask_pass.sh
         #!/usr/bin/env sh
         echo $SECRET
         EOF
-        chmod +x ask_pass.sh
+        chmod +x $(pwd)/ask_pass.sh
         mkdir -p ~/.ssh
         ssh-keyscan wehack.network >> ~/.ssh/known_hosts
         ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-        export SSH_ASKPASS=ask_pass.sh 
+        export SSH_ASKPASS=$(pwd)/ask_pass.sh
         export DISPLAY=localhost:0.0
         ssh-add - <<< "${{ secrets.SSH_PRIV_KEY }}"
     - name: 'Test SFTP access'
