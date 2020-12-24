@@ -13,7 +13,6 @@ jobs:
         token: ${{ secrets.ACCESS_TOKEN }}  
     - name: Setup SSH Keys and known_hosts
       env:
-        SECRET: '${{ secrets.KEY_PASS }}'
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
         cat<<EOF | tee $(pwd)/ask_pass.sh
@@ -25,7 +24,8 @@ jobs:
         ssh-keyscan wehack.network >> ~/.ssh/known_hosts
         ssh-agent -a $SSH_AUTH_SOCK > /dev/null
         export SSH_ASKPASS=$(pwd)/ask_pass.sh
-        #export DISPLAY=localhost:0.0
+        export DISPLAY=:0
+        export SECRET='${{ secrets.KEY_PASS }}'
         ssh-add - <<< "${{ secrets.SSH_PRIV_KEY }}"
     - name: 'Test SFTP access'
       env:
