@@ -17,7 +17,7 @@ jobs:
       run: |
         cat<<EOF | tee $(pwd)/ask_pass.sh
         #!/usr/bin/env sh
-        echo $SECRET
+        echo \$SECRET
         EOF
         chmod +x $(pwd)/ask_pass.sh
         mkdir -p ~/.ssh
