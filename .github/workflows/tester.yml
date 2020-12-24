@@ -25,7 +25,7 @@ jobs:
         ssh-keyscan wehack.network >> ~/.ssh/known_hosts
         ssh-agent -a $SSH_AUTH_SOCK > /dev/null
         export SSH_ASKPASS=$(pwd)/ask_pass.sh
-        export DISPLAY=localhost:0.0
+        #export DISPLAY=localhost:0.0
         ssh-add - <<< "${{ secrets.SSH_PRIV_KEY }}"
     - name: 'Test SFTP access'
       env:
