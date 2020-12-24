@@ -1,8 +1,8 @@
 name: testing-deploy
 on:
-  pull_request:
+  push:
     branches:
-      - testing/*
+    - testing/*
 jobs:
   commit:
     runs-on: ubuntu-latest
