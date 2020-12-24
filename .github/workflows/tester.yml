@@ -10,8 +10,18 @@ jobs:
     - name: 'Check out code'
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.ACCESS_TOKEN }}    
+        token: ${{ secrets.ACCESS_TOKEN }}  
+    - name: Setup SSH Keys and known_hosts
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan wehack.network >> ~/.ssh/known_hosts
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.SSH_PRIV_KEY }}"  
     - name: 'Test SFTP access'
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
       run: |
         cat<<EOF | awk '{$1=$1};1' | base64 -d - >/tmp/id_ed25519_github
         ${{ secrets.SSH_PRIV_KEY }}
