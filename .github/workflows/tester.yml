@@ -23,6 +23,10 @@ jobs:
         chmod +x ask_pass.sh
         mkdir -p ~/.ssh
         ssh-keyscan wehack.network >> ~/.ssh/known_hosts
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        export SSH_ASKPASS=ask_pass.sh 
+        export DISPLAY=localhost:0.0
+        ssh-add - <<< "${{ secrets.SSH_PRIV_KEY }}"
     - name: 'Test SFTP access'
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
