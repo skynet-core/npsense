@@ -24,7 +24,11 @@ task nsense, "Run nsense service":
 
 task static, "Build static musl binaries":
     let dir = getCurrentDir()
-    exec "docker run --rm -v " & dir & ":/home/nim/nord-sense smartcoder/nim:v1.4 bash -c 'cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc --passL:-static -d:release --opt:size -y'"
+    exec "docker run --rm -v " & dir &
+        ":/home/nim/nord-sense smartcoder/nim:v1.4 bash -c '" &
+        "sudo apk update && sudo apk upgrade && sudo apk add sqlite-static &&" &
+        " cd /home/nim/nord-sense && nimble build --gcc.exe:gcc --gcc.linkerexe:gcc" &
+        " --passL:-static --dynlibOverride:libsqlite3.so --passL:/usr/lib/libsqlite3.a -d:release --opt:size -y'"
 
 task package, "Create packages":
     let dir = getCurrentDir()
