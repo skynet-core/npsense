@@ -6,11 +6,13 @@
 # To run these tests, simply execute `nimble test`.
 
 import unittest
+import sequtils
 import nsensepkg/config
+import nsensepkg/cli
 import streams
 import yaml
 
-suite "correct welcome":
+suite "nsense misc tests":
    
    test "test yaml":
       var cfg = Config()
@@ -18,6 +20,12 @@ suite "correct welcome":
       load(s,cfg)
       s.close()
       cfg.normalize()
-      echo $(cfg.zones[1].fans[0].levelConfig(0x32))
-               
+      assert cfg.zones[1].fans[0].levelConfig(0x32).unsafeGet.info == "L:2 T:50.0 F:50.0 (0x32 0x80)"
+   
+   test "option parser":
+    let app = parseCli(["-c","some","-p","/run/mypid","-f"].toSeq)
+    assert app.config.get == "some"
+    assert app.pidfile == "/run/mypid"
+    assert app.force == true
+
          

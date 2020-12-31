@@ -17,6 +17,10 @@ bin           = @["nsense","nsensepkg/cli/nsensectl"]
 requires "nim >= 1.4.0"
 requires "yaml#head"
 requires "argparse >= 2.0.0"
+requires "https://github.com/skynet-core/nim-smbios#0.1.3"
+
+task nsense, "Run nsense service":
+    exec "nim --out:/tmp/nsense r src/nsense.nim -p /tmp/nsense.pid -f"
 
 task static, "Build static musl binaries":
     let dir = getCurrentDir()
