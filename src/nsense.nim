@@ -1,7 +1,7 @@
 # This is just an example to get you started. A typical hybrid package
 # uses this file as the main entry point of the application.
 import argparse, os, strutils, nim_smbios, selectors, times, posix, tables, db_sqlite, strformat
-import nsensepkg/[cli, misc, state, port]
+import nsensepkg/[cli, misc, state, port, logger]
 import nsensepkg/config as cfg
 
 
@@ -12,28 +12,34 @@ when isMainModule:
     pid = getCurrentProcessId()
     dbFile = dbFilePath(wd)
     pidFile = joinPath(wd, app.pidfile)
+    log     = newLogger(app.logLevel)
   # check another instances
   if fileExists(pidFile):
     if not app.force:
-      quit("another instance of the service seems is running, please kill or pass --force option", -1)
+      log.error("another instance of the service seems is running, please kill or pass --force option")
+      quit(1)
     else:
       let oldPid = readPid(pidFile)
       killService(oldPid)
       discard truncate(pidFile, 0)
+  if not dirExists(pidFile.splitFile.dir):
+    createDir(pidFile.splitFile.dir)
   # save new pid
   writeFile(pidFile, $pid)
   # read bios model info
+  log.info(&"nsense starting from {wd} ...")
   var
     config: Config
     client: DbConn
-    configFile = configFilePath(wd) 
+    configFile = if app.config.isSome(): app.config.unsafeGet else: configFilePath(wd) 
     smbParser = initParser()
   let 
     result = smbParser.parseTable()
     opt = result.structs(dtSystem.uint8)
   
   if opt.isNone or opt.unsafeGet.len < 1:
-    quit("failed to read system information", -1)
+    log.error("failed to read system information")
+    quit(1)
   let 
     sysInfo =  cast[SystemInfo](opt.unsafeGet[0])
     model        = sysInfo.manufacturer & " " & sysInfo.productName
@@ -49,8 +55,6 @@ when isMainModule:
       loadConfig(configFile)
     else:
       defaultConfig(name = model)
-
-  echo config
 
   let 
     sel = newSelector[int]()
@@ -82,16 +86,16 @@ when isMainModule:
 
   let handlerSwitch = {
     hupFd: proc(timeStr: string): void =
-      stderr.writeLine(fmt"{timeStr}: SIGHUP received. Updating configuration ...")
+      log.info(&"{timeStr}: SIGHUP received. Updating configuration ...")
       loadAndReset()
     ,
     contFd: proc(timeStr: string): void =
-      stderr.writeLine(fmt"{timeStr}: SIGCONT received. Continue watching ...")
+      log.info(&"{timeStr}: SIGCONT received. Continue watching ...")
       loadAndReset()
     ,
     pauseFd: proc(timeStr: string): void =
       unregisterTimerAndReset()
-      stderr.writeLine(fmt"{timeStr}: SIGTSTP received. Going idle ...")
+      log.info(&"{timeStr}: SIGSTOP received. Going idle ...")
     ,
     timerFd: proc(timeStr: string): void =
       if not config.ready():
@@ -113,22 +117,22 @@ when isMainModule:
                   ctrl.send(fan.address, fan.manual)
                 ctrl.send(fan.wrReg, cfg.unsafeGet.rpm)
                 state.fanLevels[j] = cfg.unsafeGet.index
-                stderr.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ {cfg.unsafeGet.info} ]")
+                log.debug(&"{timeStr}: [{zone.name} {fan.name}] -> [ {cfg.unsafeGet.info} ]")
             else:
                 if prevLevel > 0:
                   ctrl.send(fan.address, fan.auto)
-                  stderr.writeLine(fmt"{timeStr}: [{zone.name} {fan.name}] -> [ auto ]")
+                  log.debug(&"{timeStr}: [{zone.name} {fan.name}] -> [ auto ]")
                 state.fanLevels[j] = -1
           state.reset()
     ,
     termFd: proc(timeStr: string): void =
       unregisterTimerAndReset()
-      stderr.writeLine(fmt"{timeStr}: SIGTERM received. Quiting ...")
+      log.info("{timeStr}: SIGTERM received. Quiting ... ")
       quit(0)
     ,
     killFd: proc(timeStr: string): void =
       unregisterTimerAndReset()
-      stderr.writeLine(fmt"{timeStr}: SIGKILL received. Quiting ...")
+      log.info("{timeStr}: SIGKILL received. Quiting ... ")
       quit(1)
     ,
   }.toTable

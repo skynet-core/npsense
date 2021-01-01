@@ -7,8 +7,7 @@
 
 import unittest
 import sequtils
-import nsensepkg/config
-import nsensepkg/cli
+import nsensepkg/[config,cli]
 import streams
 import yaml
 
@@ -16,16 +15,14 @@ suite "nsense misc tests":
    
    test "test yaml":
       var cfg = Config()
-      var s = newFileStream("./configs/AcerP515-51.yaml",fmRead)
+      var s = newFileStream("./configs/AcerPredatorPT515-51.yaml",fmRead)
       load(s,cfg)
       s.close()
       cfg.normalize()
       assert cfg.zones[1].fans[0].levelConfig(0x32).unsafeGet.info == "L:2 T:50.0 F:50.0 (0x32 0x80)"
    
    test "option parser":
-    let app = parseCli(["-c","some","-p","/run/mypid","-f"].toSeq)
-    assert app.config.get == "some"
-    assert app.pidfile == "/run/mypid"
-    assert app.force == true
-
-         
+      let app = parseCli(["-c","some","-p","/run/mypid","-f"].toSeq)
+      assert app.config.get == "some"
+      assert app.pidfile == "/run/mypid"
+      assert app.force == true

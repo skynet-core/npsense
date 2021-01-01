@@ -13,8 +13,8 @@ if [ ! -d /opt/nsense/etc/nsense ]; then
     mkdir -p /opt/nsense/etc/nsense
 fi
 
-if [ ! -d /opt/nsense/share/configs ]; then
-    mkdir -p /opt/nsense/share/configs
+if [ ! -d /opt/nsense/usr/share/configs ]; then
+    mkdir -p /opt/nsense/usr/share/configs
 fi
 
 if systemctl status nsense 2>&1 1>/dev/null; then
@@ -23,8 +23,8 @@ fi
 
 cp -f ./nsense /opt/nsense/bin/
 cp -f ./nsensepkg/cli/nsensectl /opt/nsense/bin/
-cp -f ./configs/*.yaml /opt/nsense/share/configs
-cp -fr ./res/service /opt/nsense/share/
+cp -f ./configs/*.yaml /opt/nsense/usr/share/configs
+cp -fr ./res/service /opt/nsense/usr/share/
 
 executable=$(readlink /proc/1/exe)
 bin=${executable##*/}

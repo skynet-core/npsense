@@ -5,7 +5,7 @@ import config, state
 
 const 
   dbFileName = "settings.db"
-  shareConfigsDir = "/share/configs"
+  shareConfigsDir = "/usr/share/configs"
   configFileName = "config"
   configFileFolder = "/etc/nsense"
   replacements = [(" ",""),("_",""),("-", "")]
@@ -67,7 +67,7 @@ proc resolveConfig*(wd: string, model: string, configFile: string): string =
         if configFile == match:
           let dest = joinPath(configDir, configFileName)
           try:
-            copyFile(configFile, dest)
+            copyFile(file.path, dest)
             return dest
           except OSError:
             quit("failed to copy '" & configFile & "' into '" & dest & "': " & getCurrentExceptionMsg(),-1)
