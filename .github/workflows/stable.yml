@@ -48,7 +48,7 @@ jobs:
         export SECRET='${{ secrets.KEY_PASS }}'
         ssh-add - <<< "${{ secrets.SSH_PRIV_KEY }}"
     - name: Download nsense artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4.1.7
       with:
         name: binaries
     - name: Set up Go 1.x
